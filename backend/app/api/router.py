@@ -4,6 +4,7 @@ from fastapi import APIRouter
 
 from app.core.database import ping_mongodb
 from app.core.elasticsearch import ping_elasticsearch
+from app.llm.service import get_llm_service
 from app.scheduler.models import SchedulerStatus
 from app.scheduler.service import get_scheduler_status
 from app.services.sync import get_sync_status, run_full_sync
@@ -50,3 +51,10 @@ async def trigger_full_sync() -> dict:
     """
     asyncio.create_task(run_full_sync())
     return {"message": "Full sync started in background"}
+
+
+@router.get("/llm/status")
+async def llm_status() -> dict:
+    """Return available LLM providers and the active model."""
+    service = get_llm_service()
+    return await service.health_check()

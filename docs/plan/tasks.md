@@ -89,7 +89,7 @@
 
 ## Phase 3: LLM Pipeline (요약 및 번역)
 
-### Task 3.1 — Ollama 로컬 LLM 통합
+### Task 3.1 — Ollama 로컬 LLM 통합 ✅
 - Ollama 서비스 연동 모듈 (REST API 호출)
 - 모델 로드 확인 및 헬스체크
 - OpenAI-compatible API 래퍼 (로컬/클라우드 LLM 전환 가능)

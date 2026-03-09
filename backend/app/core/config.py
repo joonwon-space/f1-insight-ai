@@ -15,6 +15,10 @@ class Settings(BaseSettings):
     ollama_base_url: str = "http://localhost:11434"
     anthropic_api_key: str = ""
     openai_api_key: str = ""
+    llm_provider: str = "ollama"
+    llm_model: str = "llama3.1:8b"
+    llm_temperature: float = 0.3
+    llm_max_tokens: int = 1024
 
     # FastF1
     fastf1_cache_dir: str = "/tmp/fastf1_cache"
