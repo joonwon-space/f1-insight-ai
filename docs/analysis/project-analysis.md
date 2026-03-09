@@ -9,17 +9,18 @@
 
 | Phase | 완료 | 전체 | 진행률 |
 |-------|------|------|--------|
-| Phase 0: Project Init | 3 | 4 | 75% |
+| Phase 0: Project Init | 4 | 4 | 100% |
 | Phase 1: Data Collection | 0 | 4 | 0% |
 | Phase 2: Data Storage | 0 | 3 | 0% |
 | Phase 3: LLM Pipeline | 0 | 4 | 0% |
 | Phase 4: API & Frontend | 0 | 4 | 0% |
 | Phase 5: DevOps | 0 | 4 | 0% |
 | Phase 6: YouTube (확장) | 0 | 4 | 0% |
-| **전체** | **3** | **27** | **11%** |
+| **전체** | **4** | **27** | **15%** |
 
-**마지막 완료 태스크**: Task 0.3 — FastAPI 백엔드 보일러플레이트
-**다음 태스크**: Task 0.4 — Next.js 프론트엔드 보일러플레이트
+**마지막 완료 태스크**: Task 0.4 — Next.js 프론트엔드 보일러플레이트
+**다음 태스크**: Task 1.1 — FastF1 세션 스케줄 통합
+**Phase 0 완료!** Phase 1 (Data Collection) 진입.
 
 ---
 
@@ -32,7 +33,11 @@
 - [x] MongoDB 연결 모듈 — Motor async driver (`backend/app/core/database.py`)
 - [x] Elasticsearch 연결 모듈 — async client (`backend/app/core/elasticsearch.py`)
 - [x] API 라우터 구조 + 의존성 상태 포함 health check (`backend/app/api/router.py`)
-- [x] Next.js 15 앱 스켈레톤 (create-next-app 보일러플레이트)
+- [x] Next.js 15 레이아웃 — Header + Sidebar + Main 구조 (`frontend/src/app/layout.tsx`)
+- [x] Header 컴포넌트 — F1 브랜딩, 네비게이션 (`frontend/src/components/layout/Header.tsx`)
+- [x] Sidebar 컴포넌트 — 필터 플레이스홀더 (`frontend/src/components/layout/Sidebar.tsx`)
+- [x] 랜딩 페이지 — 기능 소개 카드, 바이링궈 (`frontend/src/app/page.tsx`)
+- [x] F1 테마 CSS — 다크 테마, F1 레드 (`frontend/src/app/globals.css`)
 - [x] Docker Compose 프로덕션-레디 구성 (네트워크, 헬스체크, 메모리 제한, restart policy)
 - [x] pyproject.toml 의존성 정의
 - [x] API 클라이언트 유틸리티 (`frontend/src/lib/api.ts`)
@@ -41,9 +46,9 @@
 - [ ] 스크래퍼 모듈
 - [ ] LLM 파이프라인
 - [ ] 스케줄러
-- [ ] 프론트엔드 레이아웃/페이지
 - [ ] REST API 엔드포인트 (news, search, schedule 등)
 - [ ] MongoDB/Elasticsearch 스키마 및 인덱스
+- [ ] 프론트엔드 데이터 연동 페이지 (뉴스 목록, 상세, 캘린더)
 - [ ] CI/CD
 
 ---
@@ -67,9 +72,10 @@
 ### Frontend
 | 패키지 | 상태 | 용도 |
 |---------|------|------|
-| Next.js 15 | 설치됨 | 프레임워크 |
-| TypeScript | 설치됨 | 타입 시스템 |
-| Tailwind CSS v4 | 설치됨 | 스타일링 |
+| Next.js 15 (16.1.6) | 사용중 | App Router, SSR |
+| React 19 | 사용중 | UI 라이브러리 |
+| TypeScript | 사용중 | 타입 시스템 (strict) |
+| Tailwind CSS v4 | 사용중 | 스타일링, F1 테마 |
 
 ### Infrastructure
 | 서비스 | 이미지 | 상태 |
@@ -107,10 +113,14 @@ f1-insight-ai/
 ├── frontend/
 │   ├── src/
 │   │   ├── app/
-│   │   │   ├── layout.tsx       # 기본 레이아웃 (boilerplate)
-│   │   │   ├── page.tsx         # 홈페이지 (boilerplate)
-│   │   │   ├── globals.css
+│   │   │   ├── layout.tsx       # 루트 레이아웃 (Header + Sidebar + Main)
+│   │   │   ├── page.tsx         # 랜딩 페이지 (F1 Insight AI 소개)
+│   │   │   ├── globals.css      # F1 테마 CSS (다크 모드, F1 레드)
 │   │   │   └── favicon.ico
+│   │   ├── components/
+│   │   │   └── layout/
+│   │   │       ├── Header.tsx   # 헤더 (브랜딩, 네비게이션)
+│   │   │       └── Sidebar.tsx  # 사이드바 (필터 플레이스홀더)
 │   │   └── lib/
 │   │       └── api.ts           # API 클라이언트
 │   ├── Dockerfile               # Multi-stage build
@@ -137,9 +147,9 @@ f1-insight-ai/
 - Python 3.12+ 및 ruff가 호스트에 미설치 — 로컬 lint/test 불가 (Docker 내에서 실행 필요)
 
 ### 기술 부채
-- `frontend/src/app/page.tsx` — create-next-app 보일러플레이트. Task 4.2에서 교체 예정.
-- `frontend/src/app/layout.tsx` — 메타데이터가 "Create Next App"으로 설정됨. Task 0.4에서 수정 필요.
 - CORS `allow_origins=["*"]` — 프로덕션 배포 시 특정 도메인으로 제한 필요.
+- Sidebar 모바일 대응 미완성 — `lg` 이하에서 숨김 처리만. 햄버거 메뉴 토글 필요.
+- 네비게이션 활성 상태 표시 없음 — `usePathname` 사용 시 `'use client'` 필요.
 
 ### 리스크
 - FastF1 라이브러리가 2026 시즌 데이터를 지원하는지 확인 필요
@@ -154,7 +164,8 @@ f1-insight-ai/
 |--------|--------|------|------|
 | Task 0.1 | 2026-03-10 | 008f18e | 프로젝트 디렉토리 구조, pyproject.toml, docker-compose.yml 스켈레톤, Next.js 초기화 |
 | Task 0.2 | 2026-03-10 | c677813 | Docker Compose 인프라: 커스텀 네트워크, 헬스체크 강화, ES 메모리 제한, restart policy |
-| Task 0.3 | 2026-03-10 | (pending) | FastAPI 보일러플레이트: core 모듈(config, database, elasticsearch), 라우터 구조, lifespan 관리, health check |
+| Task 0.3 | 2026-03-10 | 1b6bc68 | FastAPI 보일러플레이트: core 모듈(config, database, elasticsearch), 라우터 구조, lifespan 관리, health check |
+| Task 0.4 | 2026-03-10 | (pending) | Next.js 보일러플레이트: Header/Sidebar 레이아웃 컴포넌트, 랜딩 페이지, F1 다크 테마 |
 
 ---
 
@@ -166,3 +177,5 @@ f1-insight-ai/
 - Docker Compose 프로파일 분리 (dev / production) 검토
 - CORS 설정 프로덕션 강화 (allow_origins를 특정 도메인으로 제한)
 - 로깅 설정 모듈화 (구조화된 JSON 로깅, 로그 레벨 설정 환경 변수화)
+- 모바일 반응형 네비게이션 (햄버거 메뉴, 사이드바 토글)
+- 네비게이션 활성 상태 표시 (usePathname 기반)

@@ -26,7 +26,7 @@
 - Elasticsearch 연결 모듈
 - 기본 health check 엔드포인트
 
-### Task 0.4 — Next.js 프론트엔드 보일러플레이트
+### Task 0.4 — Next.js 프론트엔드 보일러플레이트 ✅
 - Next.js 15 App Router 프로젝트 초기화
 - TypeScript + Tailwind CSS 설정
 - 기본 레이아웃 컴포넌트 (헤더, 사이드바, 메인 영역)
