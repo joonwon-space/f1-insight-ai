@@ -36,7 +36,7 @@
 
 ## Phase 1: Data Collection (스크래핑)
 
-### Task 1.1 — FastF1 세션 스케줄 통합
+### Task 1.1 — FastF1 세션 스케줄 통합 ✅
 - FastF1 라이브러리 설치 및 캐시 설정 (`fastf1.Cache.enable_cache`)
 - 2026 시즌 캘린더 (24개 그랑프리) 조회 모듈
 - 세션별 시작/종료 시간 파싱 (FP1-FP3, Qualifying, Sprint, Race)
