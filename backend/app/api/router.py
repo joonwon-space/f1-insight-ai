@@ -2,6 +2,8 @@ from fastapi import APIRouter
 
 from app.core.database import ping_mongodb
 from app.core.elasticsearch import ping_elasticsearch
+from app.scheduler.models import SchedulerStatus
+from app.scheduler.service import get_scheduler_status
 
 router = APIRouter()
 
@@ -22,3 +24,9 @@ async def health_check() -> dict:
             "elasticsearch": "connected" if elasticsearch_ok else "disconnected",
         },
     }
+
+
+@router.get("/scheduler/status")
+async def scheduler_status() -> SchedulerStatus:
+    """Return the current scheduler status including mode, next run time, and job count."""
+    return get_scheduler_status()

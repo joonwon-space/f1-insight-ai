@@ -8,6 +8,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from app.api.router import router as api_router
 from app.core.database import close_mongodb, connect_mongodb
 from app.core.elasticsearch import close_elasticsearch, connect_elasticsearch
+from app.scheduler.service import start_scheduler, stop_scheduler
 
 logging.basicConfig(
     level=logging.INFO,
@@ -24,11 +25,13 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     await connect_mongodb()
     await connect_elasticsearch()
     logger.info("All connections established")
+    await start_scheduler()
 
     yield
 
     # Shutdown
     logger.info("Shutting down F1 Insight AI backend...")
+    await stop_scheduler()
     await close_elasticsearch()
     await close_mongodb()
     logger.info("All connections closed")
