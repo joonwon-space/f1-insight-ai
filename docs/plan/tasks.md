@@ -79,7 +79,7 @@
 - 한국어/영어 다국어 분석기 설정
 - 중복 감지용 fingerprint 필드
 
-### Task 2.3 — MongoDB → Elasticsearch 동기화 파이프라인
+### Task 2.3 — MongoDB → Elasticsearch 동기화 파이프라인 ✅
 - MongoDB Change Stream 기반 실시간 동기화
 - JSON 평탄화(Flattening) 변환 로직
 - 벌크 인덱싱 모듈
