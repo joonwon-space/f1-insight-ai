@@ -1,0 +1,39 @@
+[project]
+name = "f1-insight-ai-backend"
+version = "0.1.0"
+description = "F1 Insight AI - Backend API & Data Pipeline"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi>=0.115",
+    "uvicorn[standard]>=0.34",
+    "motor>=3.6",              # MongoDB async driver
+    "elasticsearch[async]>=8.17",
+    "httpx>=0.28",
+    "beautifulsoup4>=4.12",
+    "apscheduler>=3.10",
+    "fastf1>=3.4",
+    "pydantic>=2.10",
+    "pydantic-settings>=2.7",
+    "python-dotenv>=1.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+    "pytest-asyncio>=0.24",
+    "ruff>=0.9",
+]
+
+[build-system]
+requires = ["setuptools>=75"]
+build-backend = "setuptools.backends._legacy:_Backend"
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "W"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
