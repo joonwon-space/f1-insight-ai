@@ -16,6 +16,9 @@ class Settings(BaseSettings):
     anthropic_api_key: str = ""
     openai_api_key: str = ""
 
+    # FastF1
+    fastf1_cache_dir: str = "/tmp/fastf1_cache"
+
     # FastAPI
     backend_host: str = "0.0.0.0"
     backend_port: int = 8000
