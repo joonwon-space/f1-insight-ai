@@ -95,7 +95,7 @@
 - OpenAI-compatible API 래퍼 (로컬/클라우드 LLM 전환 가능)
 - 60/40 메모리 규칙 기반 모델 선택 가이드 (7B~8B 4-bit 양자화 권장)
 
-### Task 3.2 — 영문 요약 생성 파이프라인
+### Task 3.2 — 영문 요약 생성 파이프라인 ✅
 - 기사 본문 → 1문단 영문 요약 프롬프트 설계
 - AIDA 프레임워크 적용 (Attention-Interest-Desire-Action)
 - 배치 처리 모듈 (다수 기사 순차/병렬 처리)
