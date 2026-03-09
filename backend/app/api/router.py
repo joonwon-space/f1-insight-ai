@@ -1,9 +1,13 @@
+import asyncio
+
 from fastapi import APIRouter
 
 from app.core.database import ping_mongodb
 from app.core.elasticsearch import ping_elasticsearch
 from app.scheduler.models import SchedulerStatus
 from app.scheduler.service import get_scheduler_status
+from app.services.sync import get_sync_status, run_full_sync
+from app.services.sync_models import SyncStatus
 
 router = APIRouter()
 
@@ -30,3 +34,19 @@ async def health_check() -> dict:
 async def scheduler_status() -> SchedulerStatus:
     """Return the current scheduler status including mode, next run time, and job count."""
     return get_scheduler_status()
+
+
+@router.get("/sync/status")
+async def sync_status() -> SyncStatus:
+    """Return the current MongoDB → Elasticsearch sync status."""
+    return get_sync_status()
+
+
+@router.post("/sync/full")
+async def trigger_full_sync() -> dict:
+    """Trigger a full re-sync from MongoDB to Elasticsearch.
+
+    The sync runs in the background. Use GET /sync/status to monitor progress.
+    """
+    asyncio.create_task(run_full_sync())
+    return {"message": "Full sync started in background"}

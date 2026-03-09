@@ -12,6 +12,7 @@ from app.scheduler.service import start_scheduler, stop_scheduler
 from app.services.db_indexes import ensure_indexes
 from app.services.es_indexes import ensure_es_indexes
 from app.services.repository import MasterDataRepository
+from app.services.sync import start_sync, stop_sync
 
 logging.basicConfig(
     level=logging.INFO,
@@ -32,6 +33,7 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     await ensure_es_indexes()
     await MasterDataRepository.ensure_master_data()
     logger.info("Database indexes and master data initialized")
+    await start_sync()
     await start_scheduler()
 
     yield
@@ -39,6 +41,7 @@ async def lifespan(app: FastAPI) -> AsyncIterator[None]:
     # Shutdown
     logger.info("Shutting down F1 Insight AI backend...")
     await stop_scheduler()
+    await stop_sync()
     await close_elasticsearch()
     await close_mongodb()
     logger.info("All connections closed")
