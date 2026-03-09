@@ -76,7 +76,9 @@ Copy `.env.example` → `.env`. Key vars: `MONGODB_URI`, `ELASTICSEARCH_URL`, `O
 
 ## Task Tracking
 
-See `docs/plan/tasks.md` for phased implementation plan. See `docs/project-overview.md` for full architecture.
+- `docs/plan/tasks.md` — 단계별 구현 계획 (태스크 목록)
+- `docs/analysis/project-analysis.md` — 프로젝트 분석 현황 (매 태스크 후 자동 업데이트)
+- `docs/project-overview.md` — 전체 아키텍처 설계 문서
 
 ## Claude Code Configuration
 
