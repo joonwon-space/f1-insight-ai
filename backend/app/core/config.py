@@ -19,6 +19,9 @@ class Settings(BaseSettings):
     # FastF1
     fastf1_cache_dir: str = "/tmp/fastf1_cache"
 
+    # Transcript
+    transcript_download_dir: str = "/tmp/f1_transcripts"
+
     # FastAPI
     backend_host: str = "0.0.0.0"
     backend_port: int = 8000

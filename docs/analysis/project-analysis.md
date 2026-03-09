@@ -1,7 +1,6 @@
 # F1 Insight AI - Project Analysis
 
 > 이 파일은 각 태스크 완료 후 자동으로 업데이트됩니다.
-> 프로젝트 현황을 파악하고, 추후 tasks.md에 새 태스크를 추가할 때 참고합니다.
 
 ---
 
@@ -10,44 +9,35 @@
 | Phase | 완료 | 전체 | 진행률 |
 |-------|------|------|--------|
 | Phase 0: Project Init | 4 | 4 | 100% |
-| Phase 1: Data Collection | 2 | 4 | 50% |
+| Phase 1: Data Collection | 3 | 4 | 75% |
 | Phase 2: Data Storage | 0 | 3 | 0% |
 | Phase 3: LLM Pipeline | 0 | 4 | 0% |
 | Phase 4: API & Frontend | 0 | 4 | 0% |
 | Phase 5: DevOps | 0 | 4 | 0% |
 | Phase 6: YouTube (확장) | 0 | 4 | 0% |
-| **전체** | **6** | **27** | **22%** |
+| **전체** | **7** | **27** | **26%** |
 
-**마지막 완료 태스크**: Task 1.2 — F1 뉴스 스크래퍼 구현
-**다음 태스크**: Task 1.3 — FIA 프레스 컨퍼런스 트랜스크립트 파서
+**마지막 완료 태스크**: Task 1.3 — FIA 프레스 컨퍼런스 트랜스크립트 파서
+**다음 태스크**: Task 1.4 — 동적 스케줄러 구현
 
 ---
 
 ## 2. 아키텍처 현황
 
 ### 구현된 컴포넌트
-- [x] 프로젝트 디렉토리 구조 (backend/, frontend/, docs/)
-- [x] FastAPI 앱 — lifespan, CORS, 라우터 (`backend/app/main.py`)
-- [x] Pydantic Settings (`backend/app/core/config.py`)
-- [x] MongoDB 연결 모듈 (`backend/app/core/database.py`)
-- [x] Elasticsearch 연결 모듈 (`backend/app/core/elasticsearch.py`)
-- [x] API 라우터 + health check (`backend/app/api/router.py`)
-- [x] F1 스케줄 모델 + 서비스 (`models/schedule.py`, `services/schedule.py`)
-- [x] FastF1 클라이언트 + 2026 폴백 데이터
-- [x] 뉴스 기사 모델 (`models/article.py`) — RawArticle, ArticleDocument
-- [x] 비동기 HTTP 클라이언트 (`scraper/http_client.py`) — UA 로테이션, 쓰로틀링, 재시도
-- [x] 뉴스 파서 — formula1.com, the-race.com, autosport.com (`scraper/parsers/`)
-- [x] 중복 감지 (`scraper/dedup.py`) — URL 정규화 + Jaccard 유사도
-- [x] 스크래퍼 서비스 (`scraper/service.py`) — 전체 소스 오케스트레이션
+- [x] FastAPI 앱 — lifespan, CORS, 라우터
+- [x] Core 모듈 — Settings, MongoDB, Elasticsearch 연결
+- [x] F1 스케줄 서비스 — FastF1 + 2026 폴백
+- [x] 뉴스 스크래퍼 — 3개 소스 파서, HTTP 클라이언트, 중복 감지
+- [x] FIA 트랜스크립트 파서 — PDF 다운로드, 텍스트 추출, 발언자 분리
 - [x] Next.js 레이아웃, Header, Sidebar, 랜딩 페이지
 - [x] Docker Compose, API 클라이언트
 
 ### 미구현 컴포넌트
-- [ ] FIA 프레스 컨퍼런스 파서
-- [ ] 동적 스케줄러
+- [ ] 동적 스케줄러 (APScheduler)
 - [ ] LLM 파이프라인
 - [ ] REST API 엔드포인트
-- [ ] MongoDB/Elasticsearch 스키마 및 인덱스
+- [ ] MongoDB/ES 스키마 및 인덱스
 - [ ] 프론트엔드 데이터 연동 페이지
 - [ ] CI/CD
 
@@ -56,86 +46,52 @@
 ## 3. 기술 스택 상세
 
 ### Backend
-| 패키지 | 버전 | 상태 | 용도 |
-|---------|------|------|------|
-| FastAPI | >=0.115 | 사용중 | REST API |
-| Motor | >=3.6 | 사용중 | MongoDB async |
-| elasticsearch[async] | >=8.17 | 사용중 | 검색 |
-| Pydantic | >=2.10 | 사용중 | 모델, 스케줄, 기사 |
-| pydantic-settings | >=2.7 | 사용중 | 설정 |
-| httpx | >=0.28 | 사용중 | 스크래퍼 HTTP 클라이언트 |
-| beautifulsoup4 | >=4.12 | 사용중 | HTML 파싱 |
-| FastF1 | >=3.4 | 사용중 | 스케줄 조회 |
-| uvicorn | >=0.34 | 사용중 | ASGI 서버 |
-| APScheduler | >=3.10 | 미사용 | 스케줄링 (Task 1.4) |
-
-### Frontend
 | 패키지 | 상태 | 용도 |
 |---------|------|------|
-| Next.js 15 (16.1.6) | 사용중 | App Router |
-| React 19 | 사용중 | UI |
-| TypeScript | 사용중 | 타입 시스템 |
-| Tailwind CSS v4 | 사용중 | 스타일링 |
+| FastAPI | 사용중 | REST API |
+| Motor | 사용중 | MongoDB async |
+| elasticsearch[async] | 사용중 | 검색 |
+| Pydantic/pydantic-settings | 사용중 | 모델, 설정 |
+| httpx | 사용중 | 스크래퍼 HTTP |
+| beautifulsoup4 | 사용중 | HTML 파싱 |
+| pdfplumber | 사용중 | PDF 텍스트 추출 |
+| FastF1 | 사용중 | 스케줄 조회 |
+| APScheduler | 미사용 | Task 1.4에서 사용 |
 
 ---
 
 ## 4. 파일 구조
 
 ```
-f1-insight-ai/
-├── backend/
-│   ├── app/
-│   │   ├── main.py
-│   │   ├── api/
-│   │   │   └── router.py
-│   │   ├── core/
-│   │   │   ├── config.py
-│   │   │   ├── database.py
-│   │   │   └── elasticsearch.py
-│   │   ├── models/
-│   │   │   ├── schedule.py
-│   │   │   └── article.py       # NEW: 뉴스 기사 모델
-│   │   ├── services/
-│   │   │   ├── schedule.py
-│   │   │   ├── fastf1_client.py
-│   │   │   └── schedule_data_2026.py
-│   │   ├── scraper/
-│   │   │   ├── __init__.py      # ScraperService export
-│   │   │   ├── http_client.py   # NEW: 비동기 HTTP 클라이언트
-│   │   │   ├── dedup.py         # NEW: 중복 감지
-│   │   │   ├── service.py       # NEW: 스크래퍼 오케스트레이터
-│   │   │   └── parsers/
-│   │   │       ├── __init__.py  # NEW: 파서 레지스트리
-│   │   │       ├── base.py      # NEW: 추상 파서
-│   │   │       ├── formula1.py  # NEW: formula1.com 파서
-│   │   │       ├── the_race.py  # NEW: the-race.com 파서
-│   │   │       └── autosport.py # NEW: autosport.com 파서
-│   │   ├── llm/
-│   │   └── scheduler/
-│   ├── Dockerfile
-│   └── pyproject.toml
-├── frontend/ (unchanged)
-├── docs/
-├── docker-compose.yml
-└── .env.example
+backend/app/
+├── main.py
+├── api/router.py
+├── core/ (config.py, database.py, elasticsearch.py)
+├── models/
+│   ├── schedule.py
+│   ├── article.py
+│   └── transcript.py       # NEW: 트랜스크립트 모델
+├── services/ (schedule.py, fastf1_client.py, schedule_data_2026.py)
+├── scraper/
+│   ├── http_client.py, dedup.py, service.py
+│   ├── parsers/ (formula1, the_race, autosport)
+│   └── transcript/          # NEW
+│       ├── __init__.py
+│       ├── pdf_downloader.py
+│       ├── pdf_parser.py
+│       ├── speaker_parser.py
+│       └── service.py
+├── llm/, scheduler/
 ```
 
 ---
 
 ## 5. 이슈 및 개선 사항
 
-### 현재 이슈
-- Docker/Python 3.12+/ruff 호스트 미설치
-- 파서 CSS 셀렉터는 실제 사이트 HTML 기반 튜닝 필요
-
 ### 기술 부채
-- CORS `allow_origins=["*"]` 프로덕션 제한 필요
-- `_SESSION_DURATIONS` 중복 (fastf1_client.py, schedule.py)
-- 파서 셀렉터가 사이트 구조 변경 시 깨질 수 있음 — 모니터링 필요
-
-### 리스크
-- 뉴스 사이트 스크래핑 정책(robots.txt, rate limiting) 준수 필요
-- 사이트 HTML 구조 변경 시 파서 업데이트 필요
+- `pdf_downloader.py`가 `ScraperHttpClient` 내부 메서드 접근 → `fetch_bytes()` 공개 메서드 추가 필요
+- speaker_parser의 드라이버/팀 데이터가 하드코딩 → Task 2.1 마스터 데이터로 교체 예정
+- FIA 미디어 센터 페이지 크롤러 없음 → URL 직접 제공 필요
 
 ---
 
@@ -148,16 +104,14 @@ f1-insight-ai/
 | Task 0.3 | 2026-03-10 | 1b6bc68 | FastAPI 보일러플레이트 |
 | Task 0.4 | 2026-03-10 | cc7ca3a | Next.js 보일러플레이트 |
 | Task 1.1 | 2026-03-10 | 4dc404f | FastF1 스케줄 통합 |
-| Task 1.2 | 2026-03-10 | (pending) | 뉴스 스크래퍼: 3개 소스 파서, HTTP 클라이언트, 중복 감지, 서비스 오케스트레이터 |
+| Task 1.2 | 2026-03-10 | 4bf6082 | 뉴스 스크래퍼 (3 소스, HTTP, 중복 감지) |
+| Task 1.3 | 2026-03-10 | (pending) | FIA 트랜스크립트 파서 (PDF 다운로드/파싱, 발언자 분리) |
 
 ---
 
 ## 7. 추후 태스크 제안
 
-- MongoDB 인증 추가 (프로덕션)
-- Docker Compose 프로파일 분리
-- CORS 프로덕션 강화
-- 로깅 모듈화
-- 스크래핑 모니터링 대시보드
-- robots.txt 파서 통합
+- ScraperHttpClient에 `fetch_bytes()` 공개 메서드 추가
+- FIA 미디어 센터 자동 크롤링 (PDF URL 자동 발견)
+- 드라이버/팀 마스터 데이터 통합 (Task 2.1 후)
 - 파서 셀렉터 자동 검증 테스트
