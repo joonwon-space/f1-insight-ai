@@ -7,7 +7,7 @@
 
 ## Phase 0: Project Initialization
 
-### Task 0.1 — 프로젝트 디렉토리 구조 생성
+### Task 0.1 — 프로젝트 디렉토리 구조 생성 ✅
 - `backend/`, `frontend/`, `docker/` 기본 디렉토리 구조 생성
 - `.env.example`, `.gitignore`, `README.md` 작성
 - Python `pyproject.toml` 또는 `requirements.txt` 초기 설정

@@ -81,6 +81,9 @@ See `docs/plan/tasks.md` for phased implementation plan. See `docs/project-overv
 ## Claude Code Configuration
 
 ### Slash Commands (`.claude/commands/`)
+- **`/auto-tasks`** — 자동으로 tasks.md의 태스크를 순서대로 실행 (multi-agent orchestrator)
+- **`/next-task`** — 다음 하나의 태스크만 실행
+- **`/task-status`** — 현재 태스크 진행 상황 표시
 - `/code-review` — Full code review with severity ratings
 - `/python-review` — Python-specific code review
 - `/plan` — Create implementation plan for a feature
@@ -94,7 +97,7 @@ See `docs/plan/tasks.md` for phased implementation plan. See `docs/project-overv
 - `/update-docs` — Update documentation
 
 ### Agents (`.claude/agents/`)
-architect, planner, code-reviewer, python-reviewer, security-reviewer, database-reviewer, build-error-resolver, refactor-cleaner, doc-updater, tdd-guide
+**task-executor** (태스크 자동 실행), architect, planner, code-reviewer, python-reviewer, security-reviewer, database-reviewer, build-error-resolver, refactor-cleaner, doc-updater, tdd-guide
 
 ### Skills (`.claude/skills/`)
 python-patterns, python-testing, frontend-patterns, api-design, docker-patterns, backend-patterns, coding-standards, security-review, tdd-workflow, deployment-patterns, database-migrations, e2e-testing, search-first, verification-loop
