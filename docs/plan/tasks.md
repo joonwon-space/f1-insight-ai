@@ -73,7 +73,7 @@
 - 11개 팀 및 22명 드라이버 마스터 데이터
 - Pydantic 모델 + Motor ODM 연동
 
-### Task 2.2 — Elasticsearch 인덱스 매핑 설계
+### Task 2.2 — Elasticsearch 인덱스 매핑 설계 ✅
 - 뉴스 검색 인덱스: 제목/본문 full-text 검색, 팀/드라이버 필터
 - 비정규화된 단일 문서 구조 (nested/parent-child 회피)
 - 한국어/영어 다국어 분석기 설정
