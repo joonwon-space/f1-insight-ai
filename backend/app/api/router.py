@@ -4,7 +4,14 @@ from fastapi import APIRouter
 
 from app.core.database import ping_mongodb
 from app.core.elasticsearch import ping_elasticsearch
-from app.llm.pipeline import PipelineSummaryResult, run_summary_pipeline
+from app.llm.pipeline import (
+    PipelineFullResult,
+    PipelineSummaryResult,
+    PipelineTranslationResult,
+    run_full_pipeline,
+    run_summary_pipeline,
+    run_translation_pipeline,
+)
 from app.llm.service import get_llm_service
 from app.scheduler.models import SchedulerStatus
 from app.scheduler.service import get_scheduler_status
@@ -69,3 +76,24 @@ async def trigger_summarize(limit: int = 50) -> PipelineSummaryResult:
     saves them to MongoDB, and re-indexes into Elasticsearch.
     """
     return await run_summary_pipeline(limit=limit)
+
+
+@router.post("/llm/translate")
+async def trigger_translate(limit: int = 50) -> PipelineTranslationResult:
+    """Trigger the Korean translation pipeline manually.
+
+    Fetches up to ``limit`` articles that have English summaries but no Korean
+    translation, translates them via LLM, saves to MongoDB, and re-indexes
+    into Elasticsearch.
+    """
+    return await run_translation_pipeline(limit=limit)
+
+
+@router.post("/llm/pipeline")
+async def trigger_full_pipeline(limit: int = 50) -> PipelineFullResult:
+    """Trigger the full pipeline (summary + translation) manually.
+
+    Runs the English summary pipeline first, then the Korean translation
+    pipeline sequentially.
+    """
+    return await run_full_pipeline(limit=limit)
