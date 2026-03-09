@@ -19,7 +19,7 @@
 - 볼륨 마운트 및 네트워크 구성
 - 헬스체크 설정
 
-### Task 0.3 — FastAPI 백엔드 보일러플레이트
+### Task 0.3 — FastAPI 백엔드 보일러플레이트 ✅
 - FastAPI 앱 초기화 (`backend/app/main.py`)
 - 라우터 구조 세팅 (`api/`, `models/`, `services/`)
 - MongoDB 연결 모듈 (Motor async driver)
