@@ -42,7 +42,7 @@
 - 세션별 시작/종료 시간 파싱 (FP1-FP3, Qualifying, Sprint, Race)
 - 현재 진행 중인 세션/다음 세션 판별 유틸리티
 
-### Task 1.2 — F1 뉴스 스크래퍼 구현
+### Task 1.2 — F1 뉴스 스크래퍼 구현 ✅
 - httpx 비동기 HTTP 클라이언트 설정
 - 대상 뉴스 소스 정의 (formula1.com, the-race.com, autosport.com 등)
 - BeautifulSoup 기반 기사 본문 추출 파서

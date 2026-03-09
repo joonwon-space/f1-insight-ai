@@ -10,16 +10,16 @@
 | Phase | 완료 | 전체 | 진행률 |
 |-------|------|------|--------|
 | Phase 0: Project Init | 4 | 4 | 100% |
-| Phase 1: Data Collection | 1 | 4 | 25% |
+| Phase 1: Data Collection | 2 | 4 | 50% |
 | Phase 2: Data Storage | 0 | 3 | 0% |
 | Phase 3: LLM Pipeline | 0 | 4 | 0% |
 | Phase 4: API & Frontend | 0 | 4 | 0% |
 | Phase 5: DevOps | 0 | 4 | 0% |
 | Phase 6: YouTube (확장) | 0 | 4 | 0% |
-| **전체** | **5** | **27** | **19%** |
+| **전체** | **6** | **27** | **22%** |
 
-**마지막 완료 태스크**: Task 1.1 — FastF1 세션 스케줄 통합
-**다음 태스크**: Task 1.2 — F1 뉴스 스크래퍼 구현
+**마지막 완료 태스크**: Task 1.2 — F1 뉴스 스크래퍼 구현
+**다음 태스크**: Task 1.3 — FIA 프레스 컨퍼런스 트랜스크립트 파서
 
 ---
 
@@ -27,27 +27,26 @@
 
 ### 구현된 컴포넌트
 - [x] 프로젝트 디렉토리 구조 (backend/, frontend/, docs/)
-- [x] FastAPI 앱 — lifespan 관리, CORS, 라우터 포함 (`backend/app/main.py`)
-- [x] Pydantic Settings 설정 모듈 (`backend/app/core/config.py`)
-- [x] MongoDB 연결 모듈 — Motor async driver (`backend/app/core/database.py`)
-- [x] Elasticsearch 연결 모듈 — async client (`backend/app/core/elasticsearch.py`)
-- [x] API 라우터 구조 + 의존성 상태 포함 health check (`backend/app/api/router.py`)
-- [x] F1 스케줄 Pydantic 모델 (`backend/app/models/schedule.py`)
-- [x] FastF1 클라이언트 래퍼 (`backend/app/services/fastf1_client.py`)
-- [x] 스케줄 서비스 — FastF1 + 폴백 (`backend/app/services/schedule.py`)
-- [x] 2026 시즌 하드코딩 데이터 (`backend/app/services/schedule_data_2026.py`)
-- [x] Next.js 15 레이아웃 — Header + Sidebar + Main 구조
-- [x] Header/Sidebar 레이아웃 컴포넌트
-- [x] 랜딩 페이지 — F1 테마 다크 모드
-- [x] Docker Compose 프로덕션-레디 구성
-- [x] API 클라이언트 유틸리티 (`frontend/src/lib/api.ts`)
+- [x] FastAPI 앱 — lifespan, CORS, 라우터 (`backend/app/main.py`)
+- [x] Pydantic Settings (`backend/app/core/config.py`)
+- [x] MongoDB 연결 모듈 (`backend/app/core/database.py`)
+- [x] Elasticsearch 연결 모듈 (`backend/app/core/elasticsearch.py`)
+- [x] API 라우터 + health check (`backend/app/api/router.py`)
+- [x] F1 스케줄 모델 + 서비스 (`models/schedule.py`, `services/schedule.py`)
+- [x] FastF1 클라이언트 + 2026 폴백 데이터
+- [x] 뉴스 기사 모델 (`models/article.py`) — RawArticle, ArticleDocument
+- [x] 비동기 HTTP 클라이언트 (`scraper/http_client.py`) — UA 로테이션, 쓰로틀링, 재시도
+- [x] 뉴스 파서 — formula1.com, the-race.com, autosport.com (`scraper/parsers/`)
+- [x] 중복 감지 (`scraper/dedup.py`) — URL 정규화 + Jaccard 유사도
+- [x] 스크래퍼 서비스 (`scraper/service.py`) — 전체 소스 오케스트레이션
+- [x] Next.js 레이아웃, Header, Sidebar, 랜딩 페이지
+- [x] Docker Compose, API 클라이언트
 
 ### 미구현 컴포넌트
-- [ ] 뉴스 스크래퍼 모듈
 - [ ] FIA 프레스 컨퍼런스 파서
 - [ ] 동적 스케줄러
 - [ ] LLM 파이프라인
-- [ ] REST API 엔드포인트 (news, search, schedule 등)
+- [ ] REST API 엔드포인트
 - [ ] MongoDB/Elasticsearch 스키마 및 인덱스
 - [ ] 프론트엔드 데이터 연동 페이지
 - [ ] CI/CD
@@ -59,32 +58,24 @@
 ### Backend
 | 패키지 | 버전 | 상태 | 용도 |
 |---------|------|------|------|
-| FastAPI | >=0.115 | 사용중 | REST API, lifespan, CORS |
-| Motor | >=3.6 | 사용중 | MongoDB async 연결/ping |
-| elasticsearch[async] | >=8.17 | 사용중 | Elasticsearch 연결/ping |
-| Pydantic | >=2.10 | 사용중 | 모델, 스케줄 데이터 구조 |
-| pydantic-settings | >=2.7 | 사용중 | 환경 변수 설정 |
+| FastAPI | >=0.115 | 사용중 | REST API |
+| Motor | >=3.6 | 사용중 | MongoDB async |
+| elasticsearch[async] | >=8.17 | 사용중 | 검색 |
+| Pydantic | >=2.10 | 사용중 | 모델, 스케줄, 기사 |
+| pydantic-settings | >=2.7 | 사용중 | 설정 |
+| httpx | >=0.28 | 사용중 | 스크래퍼 HTTP 클라이언트 |
+| beautifulsoup4 | >=4.12 | 사용중 | HTML 파싱 |
+| FastF1 | >=3.4 | 사용중 | 스케줄 조회 |
 | uvicorn | >=0.34 | 사용중 | ASGI 서버 |
-| FastF1 | >=3.4 | 사용중 | F1 세션 스케줄 조회 (폴백 포함) |
-| httpx | >=0.28 | pyproject.toml에 정의, 미사용 | HTTP client |
-| beautifulsoup4 | >=4.12 | pyproject.toml에 정의, 미사용 | 파싱 |
-| APScheduler | >=3.10 | pyproject.toml에 정의, 미사용 | 스케줄링 |
+| APScheduler | >=3.10 | 미사용 | 스케줄링 (Task 1.4) |
 
 ### Frontend
 | 패키지 | 상태 | 용도 |
 |---------|------|------|
-| Next.js 15 (16.1.6) | 사용중 | App Router, SSR |
-| React 19 | 사용중 | UI 라이브러리 |
-| TypeScript | 사용중 | 타입 시스템 (strict) |
-| Tailwind CSS v4 | 사용중 | 스타일링, F1 테마 |
-
-### Infrastructure
-| 서비스 | 이미지 | 상태 |
-|---------|--------|------|
-| MongoDB | mongo:7 | docker-compose 구성 완료 |
-| Elasticsearch | 8.17.0 | docker-compose 구성 완료 |
-| Backend | python:3.12-slim | Dockerfile 있음 |
-| Frontend | node:22-alpine | Dockerfile 있음 (multi-stage) |
+| Next.js 15 (16.1.6) | 사용중 | App Router |
+| React 19 | 사용중 | UI |
+| TypeScript | 사용중 | 타입 시스템 |
+| Tailwind CSS v4 | 사용중 | 스타일링 |
 
 ---
 
@@ -94,51 +85,39 @@
 f1-insight-ai/
 ├── backend/
 │   ├── app/
-│   │   ├── __init__.py
-│   │   ├── main.py              # FastAPI 앱 (lifespan, CORS, 라우터)
+│   │   ├── main.py
 │   │   ├── api/
-│   │   │   ├── __init__.py
-│   │   │   └── router.py        # API 라우터 + health check
+│   │   │   └── router.py
 │   │   ├── core/
-│   │   │   ├── __init__.py
-│   │   │   ├── config.py        # Pydantic Settings (환경 변수)
-│   │   │   ├── database.py      # MongoDB Motor 연결 모듈
-│   │   │   └── elasticsearch.py # Elasticsearch async 연결 모듈
+│   │   │   ├── config.py
+│   │   │   ├── database.py
+│   │   │   └── elasticsearch.py
 │   │   ├── models/
-│   │   │   ├── __init__.py
-│   │   │   └── schedule.py      # 스케줄 Pydantic 모델 (Session, RaceEvent 등)
+│   │   │   ├── schedule.py
+│   │   │   └── article.py       # NEW: 뉴스 기사 모델
 │   │   ├── services/
-│   │   │   ├── __init__.py
-│   │   │   ├── schedule.py      # 스케줄 서비스 (FastF1 + 폴백)
-│   │   │   ├── fastf1_client.py # FastF1 래퍼 (캐시, 비동기)
-│   │   │   └── schedule_data_2026.py # 2026 시즌 하드코딩 데이터
-│   │   ├── llm/__init__.py
-│   │   ├── scheduler/__init__.py
-│   │   └── scraper/__init__.py
+│   │   │   ├── schedule.py
+│   │   │   ├── fastf1_client.py
+│   │   │   └── schedule_data_2026.py
+│   │   ├── scraper/
+│   │   │   ├── __init__.py      # ScraperService export
+│   │   │   ├── http_client.py   # NEW: 비동기 HTTP 클라이언트
+│   │   │   ├── dedup.py         # NEW: 중복 감지
+│   │   │   ├── service.py       # NEW: 스크래퍼 오케스트레이터
+│   │   │   └── parsers/
+│   │   │       ├── __init__.py  # NEW: 파서 레지스트리
+│   │   │       ├── base.py      # NEW: 추상 파서
+│   │   │       ├── formula1.py  # NEW: formula1.com 파서
+│   │   │       ├── the_race.py  # NEW: the-race.com 파서
+│   │   │       └── autosport.py # NEW: autosport.com 파서
+│   │   ├── llm/
+│   │   └── scheduler/
 │   ├── Dockerfile
 │   └── pyproject.toml
-├── frontend/
-│   ├── src/
-│   │   ├── app/
-│   │   │   ├── layout.tsx       # 루트 레이아웃 (Header + Sidebar + Main)
-│   │   │   ├── page.tsx         # 랜딩 페이지
-│   │   │   ├── globals.css      # F1 테마 CSS
-│   │   │   └── favicon.ico
-│   │   ├── components/layout/
-│   │   │   ├── Header.tsx
-│   │   │   └── Sidebar.tsx
-│   │   └── lib/api.ts
-│   ├── Dockerfile
-│   ├── package.json
-│   └── tsconfig.json
+├── frontend/ (unchanged)
 ├── docs/
-│   ├── analysis/project-analysis.md
-│   ├── plan/tasks.md
-│   └── project-overview.md
 ├── docker-compose.yml
-├── .env.example
-├── CLAUDE.md
-└── README.md
+└── .env.example
 ```
 
 ---
@@ -146,19 +125,17 @@ f1-insight-ai/
 ## 5. 이슈 및 개선 사항
 
 ### 현재 이슈
-- Docker가 호스트에 설치되지 않아 `docker compose config` 검증 미완료
-- Python 3.12+ 및 ruff가 호스트에 미설치 — 로컬 lint/test 불가
+- Docker/Python 3.12+/ruff 호스트 미설치
+- 파서 CSS 셀렉터는 실제 사이트 HTML 기반 튜닝 필요
 
 ### 기술 부채
-- CORS `allow_origins=["*"]` — 프로덕션 배포 시 제한 필요
-- Sidebar 모바일 대응 미완성 — 햄버거 메뉴 토글 필요
-- 네비게이션 활성 상태 표시 없음
-- `_SESSION_DURATIONS` 상수가 `fastf1_client.py`와 `schedule.py`에 중복 정의됨
+- CORS `allow_origins=["*"]` 프로덕션 제한 필요
+- `_SESSION_DURATIONS` 중복 (fastf1_client.py, schedule.py)
+- 파서 셀렉터가 사이트 구조 변경 시 깨질 수 있음 — 모니터링 필요
 
 ### 리스크
-- FastF1이 2026 시즌 데이터를 지원하지 않을 가능성 높음 → 폴백 데이터로 대응 완료
-- 2026 시즌 일정은 추정치 — 실제 FIA 발표 후 업데이트 필요
-- Elasticsearch 메모리 설정 (512MB) — Mac Mini 스펙에 따라 조정 필요
+- 뉴스 사이트 스크래핑 정책(robots.txt, rate limiting) 준수 필요
+- 사이트 HTML 구조 변경 시 파서 업데이트 필요
 
 ---
 
@@ -166,20 +143,21 @@ f1-insight-ai/
 
 | 태스크 | 완료일 | 커밋 | 요약 |
 |--------|--------|------|------|
-| Task 0.1 | 2026-03-10 | 008f18e | 프로젝트 디렉토리 구조, pyproject.toml, docker-compose.yml 스켈레톤, Next.js 초기화 |
-| Task 0.2 | 2026-03-10 | c677813 | Docker Compose 인프라: 커스텀 네트워크, 헬스체크, ES 메모리 제한 |
-| Task 0.3 | 2026-03-10 | 1b6bc68 | FastAPI 보일러플레이트: core 모듈, 라우터 구조, lifespan, health check |
-| Task 0.4 | 2026-03-10 | cc7ca3a | Next.js 보일러플레이트: Header/Sidebar 레이아웃, 랜딩 페이지, F1 다크 테마 |
-| Task 1.1 | 2026-03-10 | (pending) | FastF1 스케줄 통합: 세션/이벤트 모델, FastF1 래퍼, 2026 폴백 데이터, 현재/다음 세션 감지 |
+| Task 0.1 | 2026-03-10 | 008f18e | 프로젝트 구조 초기화 |
+| Task 0.2 | 2026-03-10 | c677813 | Docker Compose 인프라 |
+| Task 0.3 | 2026-03-10 | 1b6bc68 | FastAPI 보일러플레이트 |
+| Task 0.4 | 2026-03-10 | cc7ca3a | Next.js 보일러플레이트 |
+| Task 1.1 | 2026-03-10 | 4dc404f | FastF1 스케줄 통합 |
+| Task 1.2 | 2026-03-10 | (pending) | 뉴스 스크래퍼: 3개 소스 파서, HTTP 클라이언트, 중복 감지, 서비스 오케스트레이터 |
 
 ---
 
 ## 7. 추후 태스크 제안
 
-- MongoDB 인증 추가 (프로덕션 배포 시)
-- Docker Compose 프로파일 분리 (dev / production)
-- CORS 설정 프로덕션 강화
-- 로깅 모듈화 (JSON 로깅, 로그 레벨 환경 변수화)
-- 모바일 반응형 네비게이션
-- 스케줄 데이터 자동 업데이트 메커니즘 (FIA 공식 발표 시)
-- `_SESSION_DURATIONS` 중복 제거 → 공통 상수로 추출
+- MongoDB 인증 추가 (프로덕션)
+- Docker Compose 프로파일 분리
+- CORS 프로덕션 강화
+- 로깅 모듈화
+- 스크래핑 모니터링 대시보드
+- robots.txt 파서 통합
+- 파서 셀렉터 자동 검증 테스트
