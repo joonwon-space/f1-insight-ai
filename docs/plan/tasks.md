@@ -66,7 +66,7 @@
 
 ## Phase 2: Data Storage (저장소)
 
-### Task 2.1 — MongoDB 스키마 및 모델 설계
+### Task 2.1 — MongoDB 스키마 및 모델 설계 ✅
 - 뉴스 Article 모델: 제목, 본문, 소스, 작성일, 태그, 이미지 URL
 - 트랜스크립트 Transcript 모델: 세션 정보, 발언자, 발언 내용
 - 시즌/라운드/세션 계층 구조 메타데이터 모델
