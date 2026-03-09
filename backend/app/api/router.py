@@ -4,6 +4,7 @@ from fastapi import APIRouter
 
 from app.core.database import ping_mongodb
 from app.core.elasticsearch import ping_elasticsearch
+from app.llm.pipeline import PipelineSummaryResult, run_summary_pipeline
 from app.llm.service import get_llm_service
 from app.scheduler.models import SchedulerStatus
 from app.scheduler.service import get_scheduler_status
@@ -58,3 +59,13 @@ async def llm_status() -> dict:
     """Return available LLM providers and the active model."""
     service = get_llm_service()
     return await service.health_check()
+
+
+@router.post("/llm/summarize")
+async def trigger_summarize(limit: int = 50) -> PipelineSummaryResult:
+    """Trigger the English summary pipeline manually.
+
+    Fetches up to ``limit`` unsummarized articles, generates summaries via LLM,
+    saves them to MongoDB, and re-indexes into Elasticsearch.
+    """
+    return await run_summary_pipeline(limit=limit)

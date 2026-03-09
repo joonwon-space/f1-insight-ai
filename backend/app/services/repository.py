@@ -87,6 +87,18 @@ class ArticleRepository:
         return await _db()[ARTICLES_COLLECTION].count_documents(query)
 
     @staticmethod
+    async def update_article(url: str, update_fields: dict[str, Any]) -> bool:
+        """Update specific fields of an article identified by URL.
+
+        Returns True if a document was matched and modified.
+        """
+        result = await _db()[ARTICLES_COLLECTION].update_one(
+            {"url": url},
+            {"$set": update_fields},
+        )
+        return result.modified_count > 0
+
+    @staticmethod
     async def get_known_urls() -> set[str]:
         """Return all known article URLs for deduplication."""
         cursor = _db()[ARTICLES_COLLECTION].find({}, {"url": 1, "_id": 0})
