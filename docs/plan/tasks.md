@@ -13,7 +13,7 @@
 - Python `pyproject.toml` 또는 `requirements.txt` 초기 설정
 - 프로젝트 루트 설정 파일 (`docker-compose.yml` 스켈레톤)
 
-### Task 0.2 — Docker Compose 인프라 구성
+### Task 0.2 — Docker Compose 인프라 구성 ✅
 - MongoDB 7.x 컨테이너 설정
 - Elasticsearch 8.x 컨테이너 설정 (메모리 제한, JVM 힙 32GB 이하)
 - 볼륨 마운트 및 네트워크 구성

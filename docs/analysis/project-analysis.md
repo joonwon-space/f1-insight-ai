@@ -9,17 +9,17 @@
 
 | Phase | 완료 | 전체 | 진행률 |
 |-------|------|------|--------|
-| Phase 0: Project Init | 1 | 4 | 25% |
+| Phase 0: Project Init | 2 | 4 | 50% |
 | Phase 1: Data Collection | 0 | 4 | 0% |
 | Phase 2: Data Storage | 0 | 3 | 0% |
 | Phase 3: LLM Pipeline | 0 | 4 | 0% |
 | Phase 4: API & Frontend | 0 | 4 | 0% |
 | Phase 5: DevOps | 0 | 4 | 0% |
 | Phase 6: YouTube (확장) | 0 | 4 | 0% |
-| **전체** | **1** | **27** | **4%** |
+| **전체** | **2** | **27** | **7%** |
 
-**마지막 완료 태스크**: Task 0.1 — 프로젝트 디렉토리 구조 생성
-**다음 태스크**: Task 0.2 — Docker Compose 인프라 구성
+**마지막 완료 태스크**: Task 0.2 — Docker Compose 인프라 구성
+**다음 태스크**: Task 0.3 — FastAPI 백엔드 보일러플레이트
 
 ---
 
@@ -29,7 +29,7 @@
 - [x] 프로젝트 디렉토리 구조 (backend/, frontend/, docs/)
 - [x] FastAPI 앱 스켈레톤 (`backend/app/main.py` — health check only)
 - [x] Next.js 15 앱 스켈레톤 (create-next-app 보일러플레이트)
-- [x] Docker Compose 스켈레톤 (MongoDB, ES, backend, frontend 정의)
+- [x] Docker Compose 프로덕션-레디 구성 (네트워크, 헬스체크, 메모리 제한, restart policy)
 - [x] pyproject.toml 의존성 정의
 - [x] API 클라이언트 유틸리티 (`frontend/src/lib/api.ts`)
 
@@ -69,8 +69,8 @@
 ### Infrastructure
 | 서비스 | 이미지 | 상태 |
 |---------|--------|------|
-| MongoDB | mongo:7 | docker-compose 정의됨, 미검증 |
-| Elasticsearch | 8.17.0 | docker-compose 정의됨, 미검증 |
+| MongoDB | mongo:7 | docker-compose 구성 완료 (헬스체크, 네트워크, 볼륨) |
+| Elasticsearch | 8.17.0 | docker-compose 구성 완료 (mem_limit 1g, ulimits, 헬스체크) |
 | Backend | python:3.12-slim | Dockerfile 있음 |
 | Frontend | node:22-alpine | Dockerfile 있음 (multi-stage) |
 
@@ -121,7 +121,7 @@ f1-insight-ai/
 ## 5. 이슈 및 개선 사항
 
 ### 현재 이슈
-- 없음 (초기 상태)
+- Docker가 호스트에 설치되지 않아 `docker compose config` 검증 미완료 (YAML 구조는 유효)
 
 ### 기술 부채
 - `frontend/src/app/page.tsx` — create-next-app 보일러플레이트. Task 4.2에서 교체 예정.
@@ -139,6 +139,7 @@ f1-insight-ai/
 | 태스크 | 완료일 | 커밋 | 요약 |
 |--------|--------|------|------|
 | Task 0.1 | 2026-03-10 | 008f18e | 프로젝트 디렉토리 구조, pyproject.toml, docker-compose.yml 스켈레톤, Next.js 초기화 |
+| Task 0.2 | 2026-03-10 | (pending) | Docker Compose 인프라: 커스텀 네트워크, 헬스체크 강화, ES 메모리 제한, restart policy |
 
 ---
 
@@ -146,4 +147,5 @@ f1-insight-ai/
 
 > 여기에 tasks.md에 추가할 새 태스크 아이디어를 기록합니다.
 
-- (아직 없음)
+- MongoDB 인증 추가 (프로덕션 배포 시 MONGO_INITDB_ROOT_USERNAME/PASSWORD 설정)
+- Docker Compose 프로파일 분리 (dev / production) 검토
