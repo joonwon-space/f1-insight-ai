@@ -7,14 +7,17 @@ from app.core.elasticsearch import ping_elasticsearch
 from app.llm.pipeline import (
     PipelineFullResult,
     PipelineSummaryResult,
+    PipelineTaggingResult,
     PipelineTranslationResult,
     run_full_pipeline,
     run_summary_pipeline,
+    run_tagging_pipeline,
     run_translation_pipeline,
 )
 from app.llm.service import get_llm_service
 from app.scheduler.models import SchedulerStatus
 from app.scheduler.service import get_scheduler_status
+from app.services.repository import ArticleRepository
 from app.services.sync import get_sync_status, run_full_sync
 from app.services.sync_models import SyncStatus
 
@@ -89,11 +92,28 @@ async def trigger_translate(limit: int = 50) -> PipelineTranslationResult:
     return await run_translation_pipeline(limit=limit)
 
 
+@router.post("/llm/tag")
+async def trigger_tagging(limit: int = 100) -> PipelineTaggingResult:
+    """Trigger the auto-tagging pipeline manually.
+
+    Fetches up to ``limit`` untagged articles, applies rule-based tagging
+    (teams, drivers, topics), saves tags to MongoDB, and re-indexes into
+    Elasticsearch.
+    """
+    return await run_tagging_pipeline(limit=limit)
+
+
 @router.post("/llm/pipeline")
 async def trigger_full_pipeline(limit: int = 50) -> PipelineFullResult:
-    """Trigger the full pipeline (summary + translation) manually.
+    """Trigger the full pipeline (summary + translation + tagging) manually.
 
     Runs the English summary pipeline first, then the Korean translation
-    pipeline sequentially.
+    pipeline, then the auto-tagging pipeline sequentially.
     """
     return await run_full_pipeline(limit=limit)
+
+
+@router.get("/tags")
+async def get_all_tags() -> dict[str, list[str]]:
+    """Return all unique tags, teams, and drivers from the articles collection."""
+    return await ArticleRepository.get_distinct_tags()

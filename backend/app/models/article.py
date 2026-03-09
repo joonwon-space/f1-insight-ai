@@ -51,9 +51,12 @@ class ArticleDocument(BaseModel):
     author: str | None = None
     image_url: HttpUrl | None = None
     tags: list[str] = Field(default_factory=list)
+    teams: list[str] = Field(default_factory=list, description="Canonical team names")
+    drivers: list[str] = Field(default_factory=list, description="Canonical driver names")
     scraped_at: datetime = Field(default_factory=datetime.utcnow)
     summary_en: str | None = None
     summary_ko: str | None = None
     is_summarized: bool = False
+    is_tagged: bool = False
 
     model_config = {"frozen": True}

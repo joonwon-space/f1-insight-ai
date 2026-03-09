@@ -7,6 +7,7 @@ import logging
 from pydantic import BaseModel
 
 from app.llm.summarizer import summarize_batch
+from app.llm.tagger import tag_batch
 from app.llm.translator import translate_batch
 from app.models.article import ArticleDocument
 from app.services.es_indexer import index_article
@@ -42,11 +43,22 @@ class PipelineTranslationResult(BaseModel):
     model_config = {"frozen": True}
 
 
+class PipelineTaggingResult(BaseModel):
+    """Statistics returned after a tagging pipeline run."""
+
+    total: int = 0
+    succeeded: int = 0
+    failed: int = 0
+
+    model_config = {"frozen": True}
+
+
 class PipelineFullResult(BaseModel):
-    """Combined statistics from running both summary and translation pipelines."""
+    """Combined statistics from running summary, translation, and tagging pipelines."""
 
     summary: PipelineSummaryResult
     translation: PipelineTranslationResult
+    tagging: PipelineTaggingResult | None = None
 
     model_config = {"frozen": True}
 
@@ -242,7 +254,91 @@ async def run_translation_pipeline(
 
 
 # ---------------------------------------------------------------------------
-# Full pipeline (summary + translation)
+# Tagging pipeline
+# ---------------------------------------------------------------------------
+
+
+async def run_tagging_pipeline(
+    limit: int = 100,
+    concurrency: int = 5,
+) -> PipelineTaggingResult:
+    """Fetch untagged articles, apply rule-based tagging, and persist results.
+
+    Steps:
+      1. Query MongoDB for articles where ``is_tagged`` is not True.
+      2. Run batch tagging via rule-based pattern matching.
+      3. Save tags, teams, and drivers back to MongoDB.
+      4. Re-index updated articles into Elasticsearch.
+      5. Return aggregate statistics.
+    """
+    # 1. Fetch untagged articles
+    articles = await ArticleRepository.find_untagged_articles(limit=limit)
+
+    if not articles:
+        logger.info("No untagged articles found")
+        return PipelineTaggingResult()
+
+    logger.info("Starting tagging pipeline for %d article(s)", len(articles))
+
+    # 2. Run batch tagging
+    results = await tag_batch(articles, concurrency=concurrency)
+
+    # Build a lookup from URL to article for later re-indexing
+    article_by_url: dict[str, ArticleDocument] = {a.url: a for a in articles}
+
+    succeeded = 0
+    failed = 0
+
+    # 3 & 4. Persist and index
+    for url, tag_result in results:
+        article = article_by_url.get(url)
+        if article is None:
+            failed += 1
+            continue
+
+        update_fields = {
+            "tags": tag_result.all_tags,
+            "teams": tag_result.teams,
+            "drivers": tag_result.drivers,
+            "is_tagged": True,
+        }
+
+        # 3. Update MongoDB
+        try:
+            await ArticleRepository.update_article(url=url, update_fields=update_fields)
+        except Exception:
+            logger.exception("Failed to update tags in MongoDB: %s", url)
+            failed += 1
+            continue
+
+        # 4. Re-index into Elasticsearch with the new tags
+        updated_article = article.model_copy(update=update_fields)
+        try:
+            await index_article(updated_article)
+        except Exception:
+            logger.exception("Failed to index tagged article in ES: %s", url)
+            # MongoDB write succeeded, still count as succeeded
+            succeeded += 1
+            continue
+
+        succeeded += 1
+
+    result = PipelineTaggingResult(
+        total=len(articles),
+        succeeded=succeeded,
+        failed=failed,
+    )
+    logger.info(
+        "Tagging pipeline complete — total=%d succeeded=%d failed=%d",
+        result.total,
+        result.succeeded,
+        result.failed,
+    )
+    return result
+
+
+# ---------------------------------------------------------------------------
+# Full pipeline (summary + translation + tagging)
 # ---------------------------------------------------------------------------
 
 
@@ -250,17 +346,19 @@ async def run_full_pipeline(
     limit: int = 50,
     concurrency: int = 3,
 ) -> PipelineFullResult:
-    """Run the summary pipeline followed by the translation pipeline.
+    """Run the summary, translation, and tagging pipelines sequentially.
 
-    Executes both pipelines sequentially so that articles summarized in the
-    first step are immediately available for translation in the second step.
+    Executes all pipelines in order so that articles processed in earlier
+    steps are available for subsequent steps.
     """
-    logger.info("Starting full pipeline (summary + translation)")
+    logger.info("Starting full pipeline (summary + translation + tagging)")
 
     summary_result = await run_summary_pipeline(limit=limit, concurrency=concurrency)
     translation_result = await run_translation_pipeline(limit=limit, concurrency=concurrency)
+    tagging_result = await run_tagging_pipeline(limit=limit, concurrency=concurrency)
 
     return PipelineFullResult(
         summary=summary_result,
         translation=translation_result,
+        tagging=tagging_result,
     )

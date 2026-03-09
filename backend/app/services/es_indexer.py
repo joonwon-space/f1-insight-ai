@@ -38,8 +38,8 @@ def _article_to_es_doc(article: ArticleDocument) -> dict[str, Any]:
         "published_at": (article.published_at.isoformat() if article.published_at else None),
         "created_at": article.scraped_at.isoformat(),
         "tags": article.tags,
-        "teams": [],  # populated by enrichment pipeline
-        "drivers": [],  # populated by enrichment pipeline
+        "teams": article.teams,
+        "drivers": article.drivers,
         "image_url": str(article.image_url) if article.image_url else None,
         "fingerprint": generate_fingerprint(article.title, str(article.source)),
     }

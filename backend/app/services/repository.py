@@ -99,6 +99,35 @@ class ArticleRepository:
         return result.modified_count > 0
 
     @staticmethod
+    async def find_untagged_articles(limit: int = 100) -> list[ArticleDocument]:
+        """Find articles that have not been tagged yet."""
+        cursor = (
+            _db()[ARTICLES_COLLECTION]
+            .find({"is_tagged": {"$ne": True}})
+            .sort("scraped_at", -1)
+            .limit(limit)
+        )
+        results: list[ArticleDocument] = []
+        async for doc in cursor:
+            doc.pop("_id", None)
+            results.append(ArticleDocument(**doc))
+        return results
+
+    @staticmethod
+    async def get_distinct_tags() -> dict[str, list[str]]:
+        """Return all unique tags, teams, and drivers from the articles collection."""
+        db = _db()
+        col = db[ARTICLES_COLLECTION]
+        tags = await col.distinct("tags")
+        teams = await col.distinct("teams")
+        drivers = await col.distinct("drivers")
+        return {
+            "tags": sorted(t for t in tags if isinstance(t, str) and t),
+            "teams": sorted(t for t in teams if isinstance(t, str) and t),
+            "drivers": sorted(d for d in drivers if isinstance(d, str) and d),
+        }
+
+    @staticmethod
     async def get_known_urls() -> set[str]:
         """Return all known article URLs for deduplication."""
         cursor = _db()[ARTICLES_COLLECTION].find({}, {"url": 1, "_id": 0})
