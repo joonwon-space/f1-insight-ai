@@ -1,12 +1,12 @@
 ---
 name: frontend-patterns
-description: Frontend development patterns for React, Next.js, state management, performance optimization, and UI best practices.
+description: Frontend development patterns for React, Vite, state management, performance optimization, and UI best practices.
 origin: ECC
 ---
 
 # Frontend Development Patterns
 
-Modern frontend patterns for React, Next.js, and performant user interfaces.
+Modern frontend patterns for React, Vite, and performant user interfaces.
 
 ## When to Activate
 
