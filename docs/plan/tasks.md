@@ -203,11 +203,11 @@
 
 ## Phase 6: DevOps 및 배포
 
-### 6.1 Docker 컨테이너화
-- [ ] Backend Dockerfile (Python 3.12-slim, multi-stage)
-- [ ] Frontend Dockerfile (Node 22-alpine, Vite 빌드, nginx 서빙)
-- [ ] docker-compose.yml 통합 (depends_on + healthcheck)
-- [ ] 환경 변수 관리 (.env 연동)
+### 6.1 Docker 컨테이너화 ✅
+- [x] Backend Dockerfile (Python 3.12-slim, multi-stage)
+- [x] Frontend Dockerfile (Node 22-alpine, Vite 빌드, nginx 서빙)
+- [x] docker-compose.yml 통합 (depends_on + healthcheck)
+- [x] 환경 변수 관리 (.env 연동)
 
 ### 6.2 Cloudflare Tunnel 배포
 - [ ] 터널 config.yml에 서비스 라우팅 규칙 설정
