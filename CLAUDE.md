@@ -9,8 +9,8 @@ F1 Insight AI — F1 뉴스/인터뷰 자동 수집, LLM 요약(영문+한국어
 **Data flow:** Scraper → MongoDB (raw) → Elasticsearch (search index) → LLM summary/translation → Frontend
 
 - **Backend** (`backend/`): Python 3.12+ FastAPI. Entry: `backend/app/main.py`. Modules: `api/`, `scraper/`, `scheduler/`, `llm/`, `models/`, `services/`
-- **Frontend** (`frontend/`): Next.js 15 App Router, TypeScript, Tailwind CSS v4. API client: `frontend/src/lib/api.ts`
-- **Infra**: Docker Compose — MongoDB 7, Elasticsearch 8.17, backend, frontend. Healthchecks gate startup order.
+- **Frontend** (`frontend/`): React 19 + Vite + shadcn/ui, TypeScript, Tailwind CSS v4. API client: `frontend/src/lib/api.ts`
+- **Infra**: Docker Compose — MongoDB 7, Elasticsearch 8.17, backend, frontend. Cloudflare Tunnel for external access + SSL.
 
 ## Commands
 
@@ -27,8 +27,9 @@ pytest tests/test_foo.py -k name # Single test
 ### Frontend
 ```bash
 cd frontend
-npm install && npm run dev       # Dev server (port 3000)
-npm run build                    # Production build
+npm install && npm run dev       # Dev server (port 5173)
+npm run build                    # Production build (Vite)
+npm run preview                  # Preview production build
 npm run lint                     # ESLint
 ```
 
@@ -50,10 +51,11 @@ docker compose down                           # Stop all
 
 ### Frontend (TypeScript)
 - **Strict mode**: TypeScript strict enabled.
+- **Framework**: React 19 + Vite (SPA). UI components via shadcn/ui.
 - **Styling**: Tailwind CSS v4, no CSS modules.
-- **Routing**: Next.js App Router (`src/app/`).
-- **Imports**: Always use `@/*` alias.
-- **Components**: Server Components by default. Add `'use client'` only when needed.
+- **Routing**: React Router (`src/pages/`).
+- **Imports**: Always use `@/*` alias (configured in vite.config.ts + tsconfig.json).
+- **Components**: Functional components only. Use shadcn/ui primitives where possible.
 
 ### General
 - **Language**: Code/comments in English. UI text bilingual (EN + KR).
@@ -66,19 +68,19 @@ docker compose down                           # Stop all
 모든 작업(feature, fix, refactor 등)이 끝나면 아래 순서를 **반드시** 따른다:
 
 1. **Lint**: `ruff check . && ruff format .` (backend) / `npm run lint` (frontend)
-2. **Test**: `pytest` (backend) / `npm run build` (frontend)
+2. **Test**: `pytest` (backend) / `npm run build && npm run lint` (frontend)
 3. **모두 통과하면** → `git add` → `git commit` (conventional commit) → `git push`
 4. **실패하면** → 수정 후 1번부터 재시도. 테스트 통과 전까지 커밋/푸시하지 않는다.
 
 ## Environment
 
-Copy `.env.example` → `.env`. Key vars: `MONGODB_URI`, `ELASTICSEARCH_URL`, `OLLAMA_BASE_URL`, `NEXT_PUBLIC_API_URL`.
+Copy `.env.example` → `.env`. Key vars: `MONGODB_URI`, `ELASTICSEARCH_URL`, `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`, `VITE_API_URL`.
 
 ## Task Tracking
 
 - `docs/plan/tasks.md` — 단계별 구현 계획 (태스크 목록)
 - `docs/analysis/project-analysis.md` — 프로젝트 분석 현황 (매 태스크 후 자동 업데이트)
-- `docs/project-overview.md` — 전체 아키텍처 설계 문서
+- `docs/plan/project-overview.md` — 전체 아키텍처 설계 문서
 
 ## Claude Code Configuration
 
