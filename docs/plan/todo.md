@@ -31,12 +31,12 @@ brew install tailscale
 
 ---
 
-## YouTube — API 키 및 계정 연동 (Phase 7, 장기)
+## YouTube 스크립트 자동 생성 (Phase 7, 장기)
 
-### [ ] 7.2 ElevenLabs TTS API 키 발급
-- https://elevenlabs.io 가입 → API 키 → `.env`에 `ELEVENLABS_API_KEY` 추가
+> TTS/영상 제작/업로드는 스킵. 스크립트 생성까지만.
 
-### [ ] 7.4 YouTube Data API 인증
-- Google Cloud Console에서 프로젝트 생성
-- YouTube Data API v3 활성화
-- OAuth 2.0 클라이언트 ID 발급 → `credentials.json` 저장
+### [ ] 7.1 영상 스크립트 자동 생성
+- F1 뉴스 요약 → LLM으로 유튜브 스크립트 변환
+- 구성: 보이스오버 + 장면 묘사 + 재생 시간 (3열 구조)
+- AIDA 프레임워크 (10초 후킹, 30초마다 전환)
+- 결과물을 MongoDB에 저장 + API 엔드포인트 제공
