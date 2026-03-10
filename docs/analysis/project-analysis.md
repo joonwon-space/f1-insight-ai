@@ -13,15 +13,15 @@
 | Phase 2: 데이터 수집 파이프라인 | 4 | 4 | 100% |
 | Phase 3: LLM 요약/번역 파이프라인 | 4 | 4 | 100% |
 | Phase 4: REST API 엔드포인트 | 4 | 4 | 100% |
-| Phase 5: React + shadcn/ui 프론트엔드 | 2 | 6 | 33% |
+| Phase 5: React + shadcn/ui 프론트엔드 | 6 | 6 | 100% |
 | Phase 6: DevOps | 0 | 4 | 0% |
 | Phase 7: YouTube (장기) | 0 | 5 | 0% |
-| **전체** | **19** | **34** | **56%** |
+| **전체** | **25** | **34** | **74%** |
 
 > ※ 백엔드 Phase 1~3은 이전 세션에서 구현됨 (Ollama 기반, 새 tasks.md 기준으로 재계산)
 
-**마지막 완료 태스크**: Task 5.2 — 레이아웃 및 공통 컴포넌트
-**다음 태스크**: Task 5.3 — 뉴스 목록 페이지
+**마지막 완료 태스크**: Task 5.6 — 검색 페이지
+**다음 태스크**: Phase 6 — DevOps (CI/CD, Cloudflare, 모니터링)
 
 ---
 
@@ -141,3 +141,5 @@ backend/app/
 | Task 2.1 | 2026-03-10 | feedparser RSS 수집: sources.py, parser.py, service.py, 스케줄러 통합 |
 | Task 4.1-4.4 | 2026-03-10 | REST API: /api/news, /api/search, /api/schedule, /api/teams, /api/drivers, /api/images/search |
 | Task 5.1-5.2 | 2026-03-10 | shadcn/ui 컴포넌트 (Button, Badge, Card, Skeleton, Sheet, Input), RootLayout, Header, Sidebar, 페이지 스캐폴딩 |
+| Task 5.3-5.4 | 2026-03-10 | NewsCard, Pagination, NewsPage (API 연동), NewsDetailPage (EN/KR 요약, 공유 버튼) |
+| Task 5.5-5.6 | 2026-03-10 | SchedulePage (캘린더, 카운트다운, 세션 상태), SearchPage (Elasticsearch 검색, 결과 목록) |
