@@ -20,6 +20,9 @@ class Settings(BaseSettings):
     llm_temperature: float = 0.3
     llm_max_tokens: int = 1024
 
+    # Unsplash
+    unsplash_access_key: str = ""
+
     # FastF1
     fastf1_cache_dir: str = "/tmp/fastf1_cache"
 
@@ -37,3 +40,8 @@ class Settings(BaseSettings):
 
 
 settings = Settings()
+
+
+def get_settings() -> Settings:
+    """Return the global settings instance."""
+    return settings

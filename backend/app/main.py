@@ -5,7 +5,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.api import news, schedule, search, teams
+from app.api import images, news, schedule, search, teams
 from app.api.router import router as api_router
 from app.core.database import close_mongodb, connect_mongodb
 from app.core.elasticsearch import close_elasticsearch, connect_elasticsearch
@@ -68,3 +68,4 @@ app.include_router(news.router)
 app.include_router(search.router)
 app.include_router(schedule.router)
 app.include_router(teams.router)
+app.include_router(images.router)

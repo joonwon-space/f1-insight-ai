@@ -146,11 +146,11 @@
 - [x] `GET /api/teams` — 전체 팀 목록
 - [x] `GET /api/drivers` — 전체 드라이버 목록 (팀 필터)
 
-### 4.4 이미지 API
-- [ ] Unsplash API 연동 모듈
-- [ ] 뉴스 키워드 기반 관련 이미지 자동 검색
-- [ ] 이미지 URL 캐싱 (MongoDB에 저장, 동일 기사 재요청 방지)
-- [ ] `GET /api/images/search?q=...` — 이미지 검색 프록시
+### 4.4 이미지 API ✅
+- [x] Unsplash API 연동 모듈
+- [x] 뉴스 키워드 기반 관련 이미지 자동 검색
+- [ ] 이미지 URL 캐싱 (MongoDB에 저장, 동일 기사 재요청 방지) — Phase 5에서 프론트엔드 통합 시 처리
+- [x] `GET /api/images/search?q=...` — 이미지 검색 프록시
 
 ---
 
