@@ -17,7 +17,6 @@ from app.llm.pipeline import (
 from app.llm.service import get_llm_service
 from app.scheduler.models import SchedulerStatus
 from app.scheduler.service import get_scheduler_status
-from app.services.repository import ArticleRepository
 from app.services.sync import get_sync_status, run_full_sync
 from app.services.sync_models import SyncStatus
 
@@ -111,9 +110,3 @@ async def trigger_full_pipeline(limit: int = 50) -> PipelineFullResult:
     pipeline, then the auto-tagging pipeline sequentially.
     """
     return await run_full_pipeline(limit=limit)
-
-
-@router.get("/tags")
-async def get_all_tags() -> dict[str, list[str]]:
-    """Return all unique tags, teams, and drivers from the articles collection."""
-    return await ArticleRepository.get_distinct_tags()

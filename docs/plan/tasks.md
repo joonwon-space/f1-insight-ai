@@ -131,20 +131,20 @@
 
 ## Phase 4: REST API 엔드포인트
 
-### 4.1 뉴스 API
-- [ ] `GET /api/news` — 뉴스 목록 (페이지네이션, 소스/팀/드라이버/태그 필터)
-- [ ] `GET /api/news/{id}` — 뉴스 상세 (요약 EN/KR + 태그 + 이미지)
-- [ ] `GET /api/search` — Elasticsearch 기반 전문 검색
-- [ ] `GET /api/tags` — 전체 태그 목록
+### 4.1 뉴스 API ✅
+- [x] `GET /api/news` — 뉴스 목록 (페이지네이션, 소스/팀/드라이버/태그 필터)
+- [x] `GET /api/news/{id}` — 뉴스 상세 (요약 EN/KR + 태그 + 이미지)
+- [x] `GET /api/search` — Elasticsearch 기반 전문 검색
+- [x] `GET /api/news/tags` — 전체 태그 목록
 
-### 4.2 스케줄 API
-- [ ] `GET /api/schedule` — 시즌 캘린더 (연도별)
-- [ ] `GET /api/schedule/current` — 현재/다음 세션 정보
-- [ ] `GET /api/schedule/{round}` — 특정 라운드 세션 상세
+### 4.2 스케줄 API ✅
+- [x] `GET /api/schedule` — 시즌 캘린더 (연도별)
+- [x] `GET /api/schedule/current` — 현재/다음 세션 정보
+- [x] `GET /api/schedule/{round}` — 특정 라운드 세션 상세
 
-### 4.3 마스터 데이터 API
-- [ ] `GET /api/teams` — 전체 팀 목록
-- [ ] `GET /api/drivers` — 전체 드라이버 목록 (팀 필터)
+### 4.3 마스터 데이터 API ✅
+- [x] `GET /api/teams` — 전체 팀 목록
+- [x] `GET /api/drivers` — 전체 드라이버 목록 (팀 필터)
 
 ### 4.4 이미지 API
 - [ ] Unsplash API 연동 모듈
