@@ -1,199 +1,265 @@
 # F1 Insight AI - Task List
 
-> Claude Code가 각 Task를 순서대로 작업하고 커밋합니다.
-> 각 Task는 하나의 독립적인 커밋 단위입니다.
+> 각 Phase별로 체크리스트 형태로 관리합니다.
+> 완료된 항목은 `- [x]`로 표시합니다.
 
 ---
 
-## Phase 0: Project Initialization
+## Phase 0: 환경 셋업 및 프로젝트 초기화
 
-### Task 0.1 — 프로젝트 디렉토리 구조 생성 ✅
-- `backend/`, `frontend/`, `docker/` 기본 디렉토리 구조 생성
-- `.env.example`, `.gitignore`, `README.md` 작성
-- Python `pyproject.toml` 또는 `requirements.txt` 초기 설정
-- 프로젝트 루트 설정 파일 (`docker-compose.yml` 스켈레톤)
+### 0.1 프로젝트 구조 및 개발 환경
+- [ ] 프로젝트 디렉토리 구조 재정리 (React + Vite 기반으로 전환)
+- [ ] `.env.example` 업데이트 (LLM API 키, Unsplash API 키, Cloudflare 설정 추가)
+- [ ] `.gitignore` 정비 (Vite 빌드 산출물, 캐시 등)
+- [ ] `CLAUDE.md` 업데이트 (변경된 기술 스택 반영)
+- [ ] Python `pyproject.toml` 의존성 정리 (`feedparser` 추가, `fastf1` 유지, 불필요 패키지 제거)
 
-### Task 0.2 — Docker Compose 인프라 구성 ✅
-- MongoDB 7.x 컨테이너 설정
-- Elasticsearch 8.x 컨테이너 설정 (메모리 제한, JVM 힙 32GB 이하)
-- 볼륨 마운트 및 네트워크 구성
-- 헬스체크 설정
+### 0.2 Docker Compose 인프라
+- [ ] MongoDB 7 컨테이너 설정 (헬스체크, 볼륨, 네트워크)
+- [ ] Elasticsearch 8 컨테이너 설정 (메모리 제한, JVM 힙, 헬스체크)
+- [ ] Backend (FastAPI) 서비스 설정
+- [ ] Frontend (React + Vite) 서비스 설정
+- [ ] `docker-compose.yml` 통합 검증 (`docker compose config`)
 
-### Task 0.3 — FastAPI 백엔드 보일러플레이트 ✅
-- FastAPI 앱 초기화 (`backend/app/main.py`)
-- 라우터 구조 세팅 (`api/`, `models/`, `services/`)
-- MongoDB 연결 모듈 (Motor async driver)
-- Elasticsearch 연결 모듈
-- 기본 health check 엔드포인트
-
-### Task 0.4 — Next.js 프론트엔드 보일러플레이트 ✅
-- Next.js 15 App Router 프로젝트 초기화
-- TypeScript + Tailwind CSS 설정
-- 기본 레이아웃 컴포넌트 (헤더, 사이드바, 메인 영역)
-- API 클라이언트 유틸리티 (`lib/api.ts`)
+### 0.3 Cloudflare Tunnel 설정
+- [ ] Cloudflare 계정에 도메인 등록 및 DNS 설정
+- [ ] `cloudflared` 설치 및 터널 생성 (`cloudflared tunnel create f1-insight`)
+- [ ] `config.yml` 작성 (프론트엔드 → `/`, 백엔드 API → `/api`)
+- [ ] 터널 서비스 등록 (Mac Mini 부팅 시 자동 시작)
+- [ ] HTTPS 접근 확인 및 SSL 인증서 검증
+- [ ] docker-compose에 cloudflared 서비스 추가 (선택)
 
 ---
 
-## Phase 1: Data Collection (스크래핑)
+## Phase 1: 백엔드 기반 구축
 
-### Task 1.1 — FastF1 세션 스케줄 통합 ✅
-- FastF1 라이브러리 설치 및 캐시 설정 (`fastf1.Cache.enable_cache`)
-- 2026 시즌 캘린더 (24개 그랑프리) 조회 모듈
-- 세션별 시작/종료 시간 파싱 (FP1-FP3, Qualifying, Sprint, Race)
-- 현재 진행 중인 세션/다음 세션 판별 유틸리티
+### 1.1 FastAPI 백엔드 보일러플레이트
+- [ ] FastAPI 앱 초기화 (`backend/app/main.py`) — lifespan, CORS
+- [ ] 라우터 구조 세팅 (`api/`, `models/`, `services/`, `core/`)
+- [ ] Pydantic Settings 환경 변수 모듈 (`core/config.py`)
+- [ ] MongoDB 연결 모듈 — Motor async driver (`core/database.py`)
+- [ ] Elasticsearch 연결 모듈 — async client (`core/elasticsearch.py`)
+- [ ] 기본 health check 엔드포인트 (`GET /health`)
 
-### Task 1.2 — F1 뉴스 스크래퍼 구현 ✅
-- httpx 비동기 HTTP 클라이언트 설정
-- 대상 뉴스 소스 정의 (formula1.com, the-race.com, autosport.com 등)
-- BeautifulSoup 기반 기사 본문 추출 파서
-- User-Agent 로테이션 및 요청 쓰로틀링
-- 중복 기사 감지 로직 (URL 기반 + 제목 유사도)
+### 1.2 MongoDB 스키마 및 모델 설계
+- [ ] 뉴스 Article 모델: 제목, 본문, 소스, 작성일, 태그, 이미지 URL, 요약(EN/KR)
+- [ ] 시즌/라운드/세션 계층 구조 메타데이터 모델
+- [ ] 11개 팀 및 22명 드라이버 마스터 데이터
+- [ ] Pydantic v2 모델 + Motor ODM 연동
+- [ ] MongoDB 인덱스 자동 생성 (URL unique, source, tags, published_at)
+- [ ] Repository 패턴 구현 (ArticleRepository, MasterDataRepository)
 
-### Task 1.3 — FIA 프레스 컨퍼런스 트랜스크립트 파서 ✅
-- FIA 미디어 센터 PDF 다운로드 모듈
-- PDF → 텍스트 변환 (pdfplumber 또는 pymupdf)
-- 발언자별 텍스트 분리 파싱
-- 드라이버/팀 프린시펄별 발언 데이터 구조화
+### 1.3 Elasticsearch 인덱스 매핑
+- [ ] `f1_articles` 인덱스 매핑 (제목/본문 full-text, 팀/드라이버 keyword 필터)
+- [ ] 한국어/영어 다국어 분석기 설정 (nori 플러그인 폴백)
+- [ ] 중복 감지용 fingerprint 필드 (SHA-256 해시)
+- [ ] 인덱스 자동 생성 함수 (`ensure_es_indexes()`)
+- [ ] ES 검색 서비스 (multi_match, 필터, 부스팅)
+- [ ] ES 인덱서 (단건/벌크 인덱싱)
 
-### Task 1.4 — 동적 스케줄러 구현 ✅
-- APScheduler 설정 (AsyncIOScheduler)
-- 기본 크론 잡: 비경기일 1~2회/일 수집
-- 레이스 위크엔드 자동 전환: 세션 전후 10분 간격 수집
-- FastF1 세션 스케줄 연동으로 자동 빈도 전환
-- 스케줄 상태 모니터링 엔드포인트
-
----
-
-## Phase 2: Data Storage (저장소)
-
-### Task 2.1 — MongoDB 스키마 및 모델 설계 ✅
-- 뉴스 Article 모델: 제목, 본문, 소스, 작성일, 태그, 이미지 URL
-- 트랜스크립트 Transcript 모델: 세션 정보, 발언자, 발언 내용
-- 시즌/라운드/세션 계층 구조 메타데이터 모델
-- 11개 팀 및 22명 드라이버 마스터 데이터
-- Pydantic 모델 + Motor ODM 연동
-
-### Task 2.2 — Elasticsearch 인덱스 매핑 설계 ✅
-- 뉴스 검색 인덱스: 제목/본문 full-text 검색, 팀/드라이버 필터
-- 비정규화된 단일 문서 구조 (nested/parent-child 회피)
-- 한국어/영어 다국어 분석기 설정
-- 중복 감지용 fingerprint 필드
-
-### Task 2.3 — MongoDB → Elasticsearch 동기화 파이프라인 ✅
-- MongoDB Change Stream 기반 실시간 동기화
-- JSON 평탄화(Flattening) 변환 로직
-- 벌크 인덱싱 모듈
-- 동기화 실패 재시도 및 에러 핸들링
+### 1.4 MongoDB → Elasticsearch 동기화
+- [ ] Change Stream 기반 실시간 동기화 (replica set 필요, 폴백 처리)
+- [ ] Full Sync (초기 동기화 / 복구용, 배치 100건 단위)
+- [ ] 동기화 상태 모니터링 엔드포인트 (`GET /sync/status`)
+- [ ] 에러 핸들링 및 재시도 로직
 
 ---
 
-## Phase 3: LLM Pipeline (요약 및 번역)
+## Phase 2: 데이터 수집 파이프라인
 
-### Task 3.1 — Ollama 로컬 LLM 통합 ✅
-- Ollama 서비스 연동 모듈 (REST API 호출)
-- 모델 로드 확인 및 헬스체크
-- OpenAI-compatible API 래퍼 (로컬/클라우드 LLM 전환 가능)
-- 60/40 메모리 규칙 기반 모델 선택 가이드 (7B~8B 4-bit 양자화 권장)
+### 2.1 RSS 피드 수집 (1차 데이터 소스)
+- [ ] `feedparser` 라이브러리 설치 및 RSS 파서 모듈 구현
+- [ ] F1 공식 RSS 피드 파싱 (`formula1.com/en/latest/all.xml`)
+- [ ] RSS 항목 → Article 모델 변환 (제목, 링크, 발행일, 요약)
+- [ ] RSS 기반 중복 감지 (GUID/링크 기반)
+- [ ] 추가 RSS 소스 확장 가능 구조 (the-race.com, autosport.com RSS 등)
 
-### Task 3.2 — 영문 요약 생성 파이프라인 ✅
-- 기사 본문 → 1문단 영문 요약 프롬프트 설계
-- AIDA 프레임워크 적용 (Attention-Interest-Desire-Action)
-- 배치 처리 모듈 (다수 기사 순차/병렬 처리)
-- 요약 품질 검증 로직 (길이, 키워드 포함 여부)
+### 2.2 HTML 스크래핑 (2차 보조 수집)
+- [ ] httpx 비동기 HTTP 클라이언트 (UA 로테이션, 쓰로틀링, 재시도)
+- [ ] BeautifulSoup 기반 기사 본문 추출 파서
+- [ ] 대상 소스: formula1.com, the-race.com, autosport.com
+- [ ] 중복 기사 감지 (URL 정규화 + 제목 Jaccard 유사도)
 
-### Task 3.3 — 한국어 번역 파이프라인 ✅
-- 영문 요약 → 한국어 번역 프롬프트 설계
-- F1 전문 용어 일관성 유지 (용어집 기반)
-- 번역 결과 MongoDB 저장 및 ES 인덱스 업데이트
+### 2.3 FastF1 세션 스케줄 통합
+- [ ] FastF1 캐시 설정 및 시즌 캘린더 조회
+- [ ] 세션별 시작/종료 시간 파싱 (FP1-FP3, Qualifying, Sprint, Race)
+- [ ] 현재 진행 중인 세션 / 다음 세션 판별 유틸리티
+- [ ] 2026 시즌 폴백 데이터 (FastF1 미지원 시)
 
-### Task 3.4 — 자동 태깅 시스템 ✅
-- 팀/드라이버/세션 자동 태깅 (NER 또는 규칙 기반)
-- 태그 정규화 (팀명 변경 반영: VCARB, Cadillac 등 11개 팀)
-- 태그 기반 Elasticsearch 필터 쿼리
-
----
-
-## Phase 4: API 및 Frontend
-
-### Task 4.1 — REST API 엔드포인트 구현
-- `GET /api/news` — 뉴스 목록 (페이지네이션, 필터)
-- `GET /api/news/{id}` — 뉴스 상세 (요약 + 번역 포함)
-- `GET /api/schedule` — 시즌 캘린더 및 세션 정보
-- `GET /api/search` — Elasticsearch 기반 전문 검색
-- `GET /api/teams`, `GET /api/drivers` — 마스터 데이터
-
-### Task 4.2 — 프론트엔드 뉴스 목록 페이지
-- 레이스 위크엔드별 뉴스 그룹핑 뷰
-- 팀/드라이버 필터 사이드바
-- 무한 스크롤 또는 페이지네이션
-- 반응형 카드 레이아웃
-
-### Task 4.3 — 프론트엔드 뉴스 상세 페이지
-- 영문 요약 + 한국어 번역 토글 표시
-- 원문 소스 링크
-- 관련 뉴스 추천
-- 태그 기반 네비게이션
-
-### Task 4.4 — 시즌 캘린더 대시보드
-- 24개 그랑프리 타임라인/캘린더 뷰
-- 현재/다음 레이스 하이라이트
-- 각 라운드별 뉴스 카운트 표시
-- 세션 스케줄 (FP, Q, Race) 시간대 표시
+### 2.4 동적 스케줄러
+- [ ] APScheduler AsyncIOScheduler 설정
+- [ ] 비경기일: 하루 1~2회 수집 (크론 8AM, 8PM UTC)
+- [ ] 경기 당일: 15~30분 간격 수집 (인터벌 잡, IP 차단 방지)
+- [ ] FastF1 세션 스케줄 연동 → 자동 모드 전환 (NORMAL ↔ RACE_WEEKEND)
+- [ ] 스케줄러 상태 모니터링 엔드포인트 (`GET /scheduler/status`)
+- [ ] FastAPI lifespan에 스케줄러 시작/정지 통합
 
 ---
 
-## Phase 5: DevOps & Deployment
+## Phase 3: LLM 요약 및 번역 파이프라인
 
-### Task 5.1 — Backend Dockerfile 및 서비스 통합
-- Python 백엔드 Dockerfile 작성
-- docker-compose.yml에 backend 서비스 추가
-- 환경 변수 관리 (.env 연동)
-- 서비스 간 의존성 설정 (depends_on + healthcheck)
+### 3.1 LLM API 클라이언트
+- [ ] OpenAI API 클라이언트 (GPT-4o / GPT-4o-mini)
+- [ ] Anthropic API 클라이언트 (Claude Sonnet / Haiku)
+- [ ] 통합 LLM 서비스 — 프로바이더 추상화, 폴백 로직
+- [ ] LLM 상태 엔드포인트 (`GET /llm/status`)
+- [ ] API 키 검증 및 에러 핸들링
 
-### Task 5.2 — Frontend Dockerfile 및 서비스 통합
-- Next.js 프로덕션 빌드 Dockerfile
-- docker-compose.yml에 frontend 서비스 추가
-- 빌드 최적화 (multi-stage build)
+### 3.2 영문 요약 생성
+- [ ] 기사 본문 → 1문단 영문 요약 프롬프트 설계
+- [ ] 배치 처리 (asyncio.Semaphore 기반 동시성 제어)
+- [ ] 요약 품질 검증 (길이, 키워드 포함, 제목 중복 방지)
+- [ ] 요약 파이프라인 오케스트레이터 (fetch → summarize → save → re-index)
+- [ ] 수동 트리거 엔드포인트 (`POST /llm/summarize`)
 
-### Task 5.3 — Reverse Proxy 및 SSL 설정
-- Caddy 또는 Nginx 설정
-- HTTPS 자동 인증서 (Let's Encrypt)
-- API 라우팅 (`/api/*` → backend, `/*` → frontend)
-- Rate limiting 설정
+### 3.3 한국어 번역
+- [ ] 영문 요약 → 한국어 번역 프롬프트 설계
+- [ ] F1 전문 용어 일관성 유지 (한영 용어집 기반)
+- [ ] 번역 품질 검증 (한글 비율, 길이 체크)
+- [ ] 번역 결과 MongoDB 저장 + ES 인덱스 업데이트
+- [ ] 수동 트리거 엔드포인트 (`POST /llm/translate`)
 
-### Task 5.4 — GitHub Actions CI/CD
-- 린트 + 타입 체크 (Python: ruff, Frontend: eslint + tsc)
-- 테스트 실행 (pytest, vitest)
-- Docker 이미지 빌드 검증
-- 배포 자동화 (Mac Mini SSH deploy)
+### 3.4 자동 태깅
+- [ ] 규칙 기반 팀/드라이버 자동 태깅 (정규식 매칭)
+- [ ] 팀명 에일리어스 처리 (VCARB/Racing Bulls/AlphaTauri 등)
+- [ ] 세션/토픽 태깅 (qualifying, race, penalty, crash, strategy 등)
+- [ ] 태그 정규화 및 마스터 데이터 연동
+- [ ] 태깅 파이프라인 + 수동 트리거 (`POST /llm/tag`)
+- [ ] 전체 파이프라인 (요약 + 번역 + 태깅) 엔드포인트 (`POST /llm/pipeline`)
 
 ---
 
-## Phase 6: YouTube Automation (Phase 2 확장)
+## Phase 4: REST API 엔드포인트
 
-### Task 6.1 — 영상 스크립트 자동 생성
-- 웹 요약 데이터 → 영상 스크립트 변환 프롬프트
-- 3열 테이블 구조 (보이스오버, 장면 묘사, 재생 시간)
-- AIDA 프레임워크 적용 (10초 이내 후킹, 30초마다 전환)
-- SEO 키워드 최적화 (vidIQ 연동 검토)
+### 4.1 뉴스 API
+- [ ] `GET /api/news` — 뉴스 목록 (페이지네이션, 소스/팀/드라이버/태그 필터)
+- [ ] `GET /api/news/{id}` — 뉴스 상세 (요약 EN/KR + 태그 + 이미지)
+- [ ] `GET /api/search` — Elasticsearch 기반 전문 검색
+- [ ] `GET /api/tags` — 전체 태그 목록
 
-### Task 6.2 — TTS 음성 합성 통합
-- ElevenLabs API 또는 Edge TTS 연동
-- 음성 프로필 설정 (F1 해설 톤)
-- Speech-to-Speech 감정 합성 (Pro Stack)
-- 오디오 파일 저장 및 관리
+### 4.2 스케줄 API
+- [ ] `GET /api/schedule` — 시즌 캘린더 (연도별)
+- [ ] `GET /api/schedule/current` — 현재/다음 세션 정보
+- [ ] `GET /api/schedule/{round}` — 특정 라운드 세션 상세
 
-### Task 6.3 — 비디오 자동 제작 파이프라인
-- FFmpeg 기반 이미지/클립 합성
-- 로열티 프리 스톡 영상 소스 연동 (Coverr 등)
-- FastF1 텔레메트리 차트 자동 생성 및 삽입
-- 자막 생성 (SRT/VTT)
+### 4.3 마스터 데이터 API
+- [ ] `GET /api/teams` — 전체 팀 목록
+- [ ] `GET /api/drivers` — 전체 드라이버 목록 (팀 필터)
 
-### Task 6.4 — YouTube API 자동 업로드
-- YouTube Data API v3 OAuth 인증
-- 영상 업로드 자동화
-- 메타데이터 최적화 (제목, 설명, 태그, 썸네일)
-- Shorts + 롱폼 이중 포맷 관리
+### 4.4 이미지 API
+- [ ] Unsplash API 연동 모듈
+- [ ] 뉴스 키워드 기반 관련 이미지 자동 검색
+- [ ] 이미지 URL 캐싱 (MongoDB에 저장, 동일 기사 재요청 방지)
+- [ ] `GET /api/images/search?q=...` — 이미지 검색 프록시
+
+---
+
+## Phase 5: React + shadcn/ui 프론트엔드
+
+### 5.1 프로젝트 셋업
+- [ ] Vite + React 19 + TypeScript 프로젝트 초기화
+- [ ] Tailwind CSS v4 설정
+- [ ] shadcn/ui 설치 및 초기 설정 (`npx shadcn@latest init`)
+- [ ] React Router 설정 (SPA 라우팅)
+- [ ] API 클라이언트 유틸리티 (`lib/api.ts`)
+- [ ] 환경 변수 설정 (`VITE_API_URL`)
+
+### 5.2 레이아웃 및 공통 컴포넌트
+- [ ] 루트 레이아웃 (Header + Sidebar + Main)
+- [ ] Header — F1 Insight AI 브랜딩, 네비게이션 (News, Schedule, Search)
+- [ ] Sidebar — 팀/드라이버 필터 (shadcn Accordion, Checkbox)
+- [ ] 반응형 모바일 레이아웃 (Sheet 사이드바, 햄버거 메뉴)
+- [ ] 다크 모드 기본 적용 (F1 테마 — 레드 #e10600 액센트)
+- [ ] 로딩 스켈레톤 (shadcn Skeleton)
+
+### 5.3 뉴스 목록 페이지
+- [ ] 뉴스 카드 컴포넌트 (제목, 요약 미리보기, 소스, 날짜, 팀 배지)
+- [ ] 레이스 주간별 뉴스 그룹핑 뷰
+- [ ] 팀/드라이버/소스 필터 사이드바 연동
+- [ ] 무한 스크롤 또는 페이지네이션 (shadcn Pagination)
+- [ ] Unsplash 이미지 카드에 표시
+
+### 5.4 뉴스 상세 페이지
+- [ ] 영문 요약 표시 (상단)
+- [ ] 한국어 번역 표시 (바로 아래 배치)
+- [ ] 원문 소스 링크
+- [ ] 태그 기반 관련 뉴스 추천
+- [ ] Unsplash 관련 이미지 표시
+- [ ] 공유 버튼 (URL 복사, SNS)
+
+### 5.5 시즌 캘린더 대시보드
+- [ ] 24개 그랑프리 타임라인/캘린더 뷰
+- [ ] 현재/다음 레이스 하이라이트 (카운트다운)
+- [ ] 각 라운드별 뉴스 카운트 표시
+- [ ] 세션 스케줄 (FP, Q, Race) 시간대 표시
+
+### 5.6 검색 페이지
+- [ ] 검색 입력 (shadcn Input + Command Palette 스타일)
+- [ ] 검색 결과 하이라이트
+- [ ] 팀/드라이버/날짜 필터 조합
+- [ ] 검색 결과 페이지네이션
+
+---
+
+## Phase 6: DevOps 및 배포
+
+### 6.1 Docker 컨테이너화
+- [ ] Backend Dockerfile (Python 3.12-slim, multi-stage)
+- [ ] Frontend Dockerfile (Node 22-alpine, Vite 빌드, nginx 서빙)
+- [ ] docker-compose.yml 통합 (depends_on + healthcheck)
+- [ ] 환경 변수 관리 (.env 연동)
+
+### 6.2 Cloudflare Tunnel 배포
+- [ ] 터널 config.yml에 서비스 라우팅 규칙 설정
+- [ ] 프론트엔드: `https://도메인/` → frontend 컨테이너
+- [ ] 백엔드 API: `https://도메인/api/*` → backend 컨테이너
+- [ ] Cloudflare Access 정책 설정 (필요 시 관리자 페이지 보호)
+- [ ] 터널 자동 재시작 설정 (launchd 또는 docker restart policy)
+
+### 6.3 CI/CD (GitHub Actions)
+- [ ] 린트 + 타입 체크 (Ruff, ESLint, tsc)
+- [ ] 테스트 실행 (pytest, vitest)
+- [ ] Docker 이미지 빌드 검증
+- [ ] Mac Mini SSH 배포 자동화 (선택)
+
+### 6.4 모니터링 및 운영
+- [ ] 로그 수집 및 구조화 (JSON 로깅)
+- [ ] 헬스체크 대시보드 (/health, /scheduler/status, /sync/status, /llm/status)
+- [ ] Cloudflare Analytics 연동
+- [ ] 에러 알림 (Discord/Slack 웹훅 또는 이메일)
+
+---
+
+## Phase 7: 유튜브 자동화 (장기 플랜)
+
+### 7.1 영상 스크립트 자동 생성
+- [ ] 웹 요약 데이터 → 영상 스크립트 변환 프롬프트
+- [ ] 3열 테이블 구조 (보이스오버, 장면 묘사, 재생 시간)
+- [ ] AIDA 프레임워크 적용 (10초 이내 후킹, 30초마다 전환)
+- [ ] SEO 키워드 최적화 (vidIQ 연동 검토)
+
+### 7.2 TTS 음성 합성
+- [ ] ElevenLabs API 또는 Edge TTS 연동
+- [ ] 음성 프로필 설정 (F1 해설 톤)
+- [ ] Speech-to-Speech 감정 합성 (Pro Stack)
+- [ ] 오디오 파일 저장 및 관리
+
+### 7.3 비디오 자동 제작
+- [ ] FFmpeg 기반 이미지/클립 합성
+- [ ] Unsplash/로열티 프리 스톡 영상 소스 연동
+- [ ] FastF1 텔레메트리 차트 자동 생성 및 삽입
+- [ ] 자막 생성 (SRT/VTT)
+
+### 7.4 YouTube API 자동 업로드
+- [ ] YouTube Data API v3 OAuth 인증
+- [ ] 영상 업로드 자동화
+- [ ] 메타데이터 최적화 (제목, 설명, 태그, 썸네일)
+- [ ] Shorts + 롱폼 이중 포맷 관리
+
+### 7.5 성과 분석
+- [ ] YouTube Analytics API 연동
+- [ ] 조회수/구독자 추이 대시보드
+- [ ] 콘텐츠 최적화 피드백 루프
 
 ---
 
@@ -214,10 +280,12 @@
 | Audi | Audi |
 | Cadillac | TBD |
 
-### 2026 주요 규정 변화 요약
-- 파워 유닛: ICE 400kW + MGU-K 350kW (50:50 에너지 분배)
-- MGU-H 폐지, 랩당 에너지 회수 8.5MJ
-- 능동형 공기역학 (Active Aero): DRS 폐지, X-모드/Z-모드 실시간 전환
-- 오버테이크 모드: 1초 이내 간격 시 350kW 추가 전력 수동 전개
-- 차량 경량화: 최소 중량 770kg, 휠베이스 3400mm
-- 100% 지속가능 연료 의무 사용
+---
+
+## 사용자 추가 작업
+
+> 아래에 추가 작업 항목을 자유롭게 기록하세요.
+
+- [ ]
+- [ ]
+- [ ]
