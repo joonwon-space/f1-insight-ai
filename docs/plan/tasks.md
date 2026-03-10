@@ -223,11 +223,11 @@
 > ⚠️ `.github/workflows/ci.yml` 생성 완료, but push 보류 — `workflow` OAuth scope 필요. `gh auth refresh -h github.com -s workflow` 후 수동 push 필요
 - [ ] Mac Mini SSH 배포 자동화 (선택)
 
-### 6.4 모니터링 및 운영
-- [ ] 로그 수집 및 구조화 (JSON 로깅)
-- [ ] 헬스체크 대시보드 (/health, /scheduler/status, /sync/status, /llm/status)
-- [ ] Cloudflare Analytics 연동
-- [ ] 에러 알림 (Discord/Slack 웹훅 또는 이메일)
+### 6.4 모니터링 및 운영 ✅
+- [x] 로그 수집 및 구조화 (JSON 로깅) — `core/logging.py` JsonFormatter
+- [x] 헬스체크 대시보드 (/health, /scheduler/status, /sync/status, /llm/status) — 이미 구현됨
+- [ ] Cloudflare Analytics 연동 — 외부 계정 필요, 스킵
+- [x] 에러 알림 (Discord/Slack 웹훅) — `core/alerts.py` send_alert()
 
 ---
 

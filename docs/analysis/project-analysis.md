@@ -14,15 +14,15 @@
 | Phase 3: LLM 요약/번역 파이프라인 | 4 | 4 | 100% |
 | Phase 4: REST API 엔드포인트 | 4 | 4 | 100% |
 | Phase 5: React + shadcn/ui 프론트엔드 | 6 | 6 | 100% |
-| Phase 6: DevOps | 0 | 4 | 0% |
+| Phase 6: DevOps | 3 | 4 | 75% |
 | Phase 7: YouTube (장기) | 0 | 5 | 0% |
-| **전체** | **25** | **34** | **74%** |
+| **전체** | **27** | **34** | **79%** |
 
 > ※ 백엔드 Phase 1~3은 이전 세션에서 구현됨 (Ollama 기반, 새 tasks.md 기준으로 재계산)
 
-**마지막 완료 태스크**: Task 6.3 — GitHub Actions CI/CD (로컬 커밋 완료, push 대기)
-**차단 사항**: GitHub `workflow` OAuth scope 없음 — `gh auth refresh -h github.com -s workflow` 실행 후 push 필요
-**다음 태스크**: Task 6.4 — 모니터링 및 운영 (헬스체크 대시보드, 로그)
+**마지막 완료 태스크**: Task 6.4 — 모니터링 및 운영 (JSON 로깅, Discord/Slack 알림)
+**차단 사항**: GitHub `workflow` OAuth scope 없음 — `gh auth refresh -h github.com -s workflow` 실행 후 push 필요 (3 커밋 누적)
+**다음 태스크**: Phase 7 — YouTube 자동화 (장기 플랜, 명시적 요청 시 시작)
 
 ---
 
@@ -144,3 +144,5 @@ backend/app/
 | Task 5.1-5.2 | 2026-03-10 | shadcn/ui 컴포넌트 (Button, Badge, Card, Skeleton, Sheet, Input), RootLayout, Header, Sidebar, 페이지 스캐폴딩 |
 | Task 5.3-5.4 | 2026-03-10 | NewsCard, Pagination, NewsPage (API 연동), NewsDetailPage (EN/KR 요약, 공유 버튼) |
 | Task 5.5-5.6 | 2026-03-10 | SchedulePage (캘린더, 카운트다운, 세션 상태), SearchPage (Elasticsearch 검색, 결과 목록) |
+| Task 6.3 | 2026-03-10 | GitHub Actions CI/CD: 4-job workflow (backend-lint, backend-test, frontend-lint, docker-build). Push 보류 — workflow scope 필요 |
+| Task 6.4 | 2026-03-10 | JSON 구조화 로깅 (core/logging.py JsonFormatter), Discord/Slack 웹훅 알림 (core/alerts.py), config 웹훅 URL 추가 |

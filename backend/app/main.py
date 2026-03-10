@@ -7,18 +7,17 @@ from fastapi.middleware.cors import CORSMiddleware
 
 from app.api import images, news, schedule, search, teams
 from app.api.router import router as api_router
+from app.core.config import settings
 from app.core.database import close_mongodb, connect_mongodb
 from app.core.elasticsearch import close_elasticsearch, connect_elasticsearch
+from app.core.logging import setup_logging
 from app.scheduler.service import start_scheduler, stop_scheduler
 from app.services.db_indexes import ensure_indexes
 from app.services.es_indexes import ensure_es_indexes
 from app.services.repository import MasterDataRepository
 from app.services.sync import start_sync, stop_sync
 
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
-)
+setup_logging(json_logs=settings.json_logs)
 logger = logging.getLogger(__name__)
 
 

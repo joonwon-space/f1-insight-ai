@@ -23,6 +23,13 @@ class Settings(BaseSettings):
     # Unsplash
     unsplash_access_key: str = ""
 
+    # Alerts
+    discord_webhook_url: str = ""
+    slack_webhook_url: str = ""
+
+    # Logging
+    json_logs: bool = True
+
     # FastF1
     fastf1_cache_dir: str = "/tmp/fastf1_cache"
 
