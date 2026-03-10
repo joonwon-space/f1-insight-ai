@@ -9,7 +9,7 @@
 
 ## GitHub — workflow scope 권한
 
-### [ ] GitHub Actions CI/CD push
+### [x] GitHub Actions CI/CD push
 `.github/workflows/ci.yml`은 이미 만들어져 있음. push만 하면 됨.
 
 ```bash
@@ -19,34 +19,15 @@ git push
 
 ---
 
-## Cloudflare — 계정 및 도메인 설정
+## 외부 접속 (필요할 때)
 
-### [ ] 0.3 / 6.2 Cloudflare Tunnel 설정 및 배포
-Mac Mini를 외부에 공개하려면 필요.
-
-1. Cloudflare 계정에 도메인 등록 및 DNS 설정
-2. Mac Mini에 `cloudflared` 설치
-   ```bash
-   brew install cloudflared
-   cloudflared tunnel login
-   cloudflared tunnel create f1-insight
-   ```
-3. `~/.cloudflared/config.yml` 작성
-   ```yaml
-   tunnel: <TUNNEL_ID>
-   credentials-file: ~/.cloudflared/<TUNNEL_ID>.json
-   ingress:
-     - hostname: yourdomain.com
-       service: http://localhost:80        # frontend
-     - hostname: api.yourdomain.com
-       service: http://localhost:8000      # backend
-     - service: http_status:404
-   ```
-4. 터널 서비스 등록 (Mac Mini 부팅 시 자동 시작)
-   ```bash
-   sudo cloudflared service install
-   ```
-5. HTTPS 접근 확인 및 SSL 인증서 검증
+### [ ] 외부 접속 설정 — 스킵 (로컬만 사용)
+로컬 네트워크에서는 `http://Mac-Mini-IP:80` 으로 바로 접속 가능.
+외부 접속이 필요해지면 **Tailscale** 사용 (도메인 불필요, 무료):
+```bash
+brew install tailscale
+# Mac Mini + 접속 기기 둘 다 설치 후 같은 계정 로그인
+```
 
 ---
 
