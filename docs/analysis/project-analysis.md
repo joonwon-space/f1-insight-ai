@@ -20,8 +20,9 @@
 
 > ※ 백엔드 Phase 1~3은 이전 세션에서 구현됨 (Ollama 기반, 새 tasks.md 기준으로 재계산)
 
-**마지막 완료 태스크**: Task 5.6 — 검색 페이지
-**다음 태스크**: Phase 6 — DevOps (CI/CD, Cloudflare, 모니터링)
+**마지막 완료 태스크**: Task 6.3 — GitHub Actions CI/CD (로컬 커밋 완료, push 대기)
+**차단 사항**: GitHub `workflow` OAuth scope 없음 — `gh auth refresh -h github.com -s workflow` 실행 후 push 필요
+**다음 태스크**: Task 6.4 — 모니터링 및 운영 (헬스체크 대시보드, 로그)
 
 ---
 

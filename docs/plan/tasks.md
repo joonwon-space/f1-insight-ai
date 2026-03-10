@@ -216,10 +216,11 @@
 - [ ] Cloudflare Access 정책 설정 (필요 시 관리자 페이지 보호)
 - [ ] 터널 자동 재시작 설정 (launchd 또는 docker restart policy)
 
-### 6.3 CI/CD (GitHub Actions)
-- [ ] 린트 + 타입 체크 (Ruff, ESLint, tsc)
-- [ ] 테스트 실행 (pytest, vitest)
-- [ ] Docker 이미지 빌드 검증
+### 6.3 CI/CD (GitHub Actions) ✅
+- [x] 린트 + 타입 체크 (Ruff, ESLint, tsc)
+- [x] 테스트 실행 (pytest, vitest)
+- [x] Docker 이미지 빌드 검증
+> ⚠️ `.github/workflows/ci.yml` 생성 완료, but push 보류 — `workflow` OAuth scope 필요. `gh auth refresh -h github.com -s workflow` 후 수동 push 필요
 - [ ] Mac Mini SSH 배포 자동화 (선택)
 
 ### 6.4 모니터링 및 운영
