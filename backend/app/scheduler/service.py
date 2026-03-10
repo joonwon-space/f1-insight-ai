@@ -11,6 +11,7 @@ from datetime import datetime, timedelta, timezone
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
 from app.scheduler.models import SchedulerMode, SchedulerStatus
+from app.scraper.rss.service import RSSService
 from app.scraper.service import ScraperService
 from app.services.schedule import get_current_session_info
 
@@ -27,19 +28,36 @@ _last_run_time: datetime | None = None
 
 
 async def _run_scrape_job() -> None:
-    """Execute a single scraping run and log results."""
+    """Execute a single collection run: RSS first, then HTML scraping as fallback."""
     global _last_run_time
     logger.info("Scrape job started (mode=%s)", _current_mode)
 
+    collected_count = 0
+
+    # Phase 1: RSS collection (primary)
+    rss_service = RSSService()
+    try:
+        rss_articles = await rss_service.collect_all()
+        collected_count += len(rss_articles)
+        logger.info("RSS collection: %d new articles", len(rss_articles))
+    except Exception:
+        logger.error("RSS collection failed, falling back to HTML scraping", exc_info=True)
+    finally:
+        await rss_service.close()
+
+    # Phase 2: HTML scraping (secondary/fallback)
     scraper = ScraperService()
     try:
-        articles = await scraper.scrape_all()
-        _last_run_time = datetime.now(tz=timezone.utc)
-        logger.info("Scrape job completed: %d new articles collected", len(articles))
+        scraper_articles = await scraper.scrape_all()
+        collected_count += len(scraper_articles)
+        logger.info("HTML scraping: %d new articles", len(scraper_articles))
     except Exception:
-        logger.error("Scrape job failed", exc_info=True)
+        logger.error("HTML scraping failed", exc_info=True)
     finally:
         await scraper.close()
+
+    _last_run_time = datetime.now(tz=timezone.utc)
+    logger.info("Scrape job completed: %d total new articles collected", collected_count)
 
 
 def _apply_mode(mode: SchedulerMode) -> None:

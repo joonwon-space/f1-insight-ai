@@ -33,99 +33,99 @@
 
 ## Phase 1: 백엔드 기반 구축
 
-### 1.1 FastAPI 백엔드 보일러플레이트
-- [ ] FastAPI 앱 초기화 (`backend/app/main.py`) — lifespan, CORS
-- [ ] 라우터 구조 세팅 (`api/`, `models/`, `services/`, `core/`)
-- [ ] Pydantic Settings 환경 변수 모듈 (`core/config.py`)
-- [ ] MongoDB 연결 모듈 — Motor async driver (`core/database.py`)
-- [ ] Elasticsearch 연결 모듈 — async client (`core/elasticsearch.py`)
-- [ ] 기본 health check 엔드포인트 (`GET /health`)
+### 1.1 FastAPI 백엔드 보일러플레이트 ✅
+- [x] FastAPI 앱 초기화 (`backend/app/main.py`) — lifespan, CORS
+- [x] 라우터 구조 세팅 (`api/`, `models/`, `services/`, `core/`)
+- [x] Pydantic Settings 환경 변수 모듈 (`core/config.py`)
+- [x] MongoDB 연결 모듈 — Motor async driver (`core/database.py`)
+- [x] Elasticsearch 연결 모듈 — async client (`core/elasticsearch.py`)
+- [x] 기본 health check 엔드포인트 (`GET /health`)
 
-### 1.2 MongoDB 스키마 및 모델 설계
-- [ ] 뉴스 Article 모델: 제목, 본문, 소스, 작성일, 태그, 이미지 URL, 요약(EN/KR)
-- [ ] 시즌/라운드/세션 계층 구조 메타데이터 모델
-- [ ] 11개 팀 및 22명 드라이버 마스터 데이터
-- [ ] Pydantic v2 모델 + Motor ODM 연동
-- [ ] MongoDB 인덱스 자동 생성 (URL unique, source, tags, published_at)
-- [ ] Repository 패턴 구현 (ArticleRepository, MasterDataRepository)
+### 1.2 MongoDB 스키마 및 모델 설계 ✅
+- [x] 뉴스 Article 모델: 제목, 본문, 소스, 작성일, 태그, 이미지 URL, 요약(EN/KR)
+- [x] 시즌/라운드/세션 계층 구조 메타데이터 모델
+- [x] 11개 팀 및 22명 드라이버 마스터 데이터
+- [x] Pydantic v2 모델 + Motor ODM 연동
+- [x] MongoDB 인덱스 자동 생성 (URL unique, source, tags, published_at)
+- [x] Repository 패턴 구현 (ArticleRepository, MasterDataRepository)
 
-### 1.3 Elasticsearch 인덱스 매핑
-- [ ] `f1_articles` 인덱스 매핑 (제목/본문 full-text, 팀/드라이버 keyword 필터)
-- [ ] 한국어/영어 다국어 분석기 설정 (nori 플러그인 폴백)
-- [ ] 중복 감지용 fingerprint 필드 (SHA-256 해시)
-- [ ] 인덱스 자동 생성 함수 (`ensure_es_indexes()`)
-- [ ] ES 검색 서비스 (multi_match, 필터, 부스팅)
-- [ ] ES 인덱서 (단건/벌크 인덱싱)
+### 1.3 Elasticsearch 인덱스 매핑 ✅
+- [x] `f1_articles` 인덱스 매핑 (제목/본문 full-text, 팀/드라이버 keyword 필터)
+- [x] 한국어/영어 다국어 분석기 설정 (nori 플러그인 폴백)
+- [x] 중복 감지용 fingerprint 필드 (SHA-256 해시)
+- [x] 인덱스 자동 생성 함수 (`ensure_es_indexes()`)
+- [x] ES 검색 서비스 (multi_match, 필터, 부스팅)
+- [x] ES 인덱서 (단건/벌크 인덱싱)
 
-### 1.4 MongoDB → Elasticsearch 동기화
-- [ ] Change Stream 기반 실시간 동기화 (replica set 필요, 폴백 처리)
-- [ ] Full Sync (초기 동기화 / 복구용, 배치 100건 단위)
-- [ ] 동기화 상태 모니터링 엔드포인트 (`GET /sync/status`)
-- [ ] 에러 핸들링 및 재시도 로직
+### 1.4 MongoDB → Elasticsearch 동기화 ✅
+- [x] Change Stream 기반 실시간 동기화 (replica set 필요, 폴백 처리)
+- [x] Full Sync (초기 동기화 / 복구용, 배치 100건 단위)
+- [x] 동기화 상태 모니터링 엔드포인트 (`GET /sync/status`)
+- [x] 에러 핸들링 및 재시도 로직
 
 ---
 
 ## Phase 2: 데이터 수집 파이프라인
 
-### 2.1 RSS 피드 수집 (1차 데이터 소스)
-- [ ] `feedparser` 라이브러리 설치 및 RSS 파서 모듈 구현
-- [ ] F1 공식 RSS 피드 파싱 (`formula1.com/en/latest/all.xml`)
-- [ ] RSS 항목 → Article 모델 변환 (제목, 링크, 발행일, 요약)
-- [ ] RSS 기반 중복 감지 (GUID/링크 기반)
-- [ ] 추가 RSS 소스 확장 가능 구조 (the-race.com, autosport.com RSS 등)
+### 2.1 RSS 피드 수집 (1차 데이터 소스) ✅
+- [x] `feedparser` 라이브러리 설치 및 RSS 파서 모듈 구현
+- [x] F1 공식 RSS 피드 파싱 (`formula1.com/en/latest/all.xml`)
+- [x] RSS 항목 → Article 모델 변환 (제목, 링크, 발행일, 요약)
+- [x] RSS 기반 중복 감지 (GUID/링크 기반)
+- [x] 추가 RSS 소스 확장 가능 구조 (the-race.com, autosport.com RSS 등)
 
-### 2.2 HTML 스크래핑 (2차 보조 수집)
-- [ ] httpx 비동기 HTTP 클라이언트 (UA 로테이션, 쓰로틀링, 재시도)
-- [ ] BeautifulSoup 기반 기사 본문 추출 파서
-- [ ] 대상 소스: formula1.com, the-race.com, autosport.com
-- [ ] 중복 기사 감지 (URL 정규화 + 제목 Jaccard 유사도)
+### 2.2 HTML 스크래핑 (2차 보조 수집) ✅
+- [x] httpx 비동기 HTTP 클라이언트 (UA 로테이션, 쓰로틀링, 재시도)
+- [x] BeautifulSoup 기반 기사 본문 추출 파서
+- [x] 대상 소스: formula1.com, the-race.com, autosport.com
+- [x] 중복 기사 감지 (URL 정규화 + 제목 Jaccard 유사도)
 
-### 2.3 FastF1 세션 스케줄 통합
-- [ ] FastF1 캐시 설정 및 시즌 캘린더 조회
-- [ ] 세션별 시작/종료 시간 파싱 (FP1-FP3, Qualifying, Sprint, Race)
-- [ ] 현재 진행 중인 세션 / 다음 세션 판별 유틸리티
-- [ ] 2026 시즌 폴백 데이터 (FastF1 미지원 시)
+### 2.3 FastF1 세션 스케줄 통합 ✅
+- [x] FastF1 캐시 설정 및 시즌 캘린더 조회
+- [x] 세션별 시작/종료 시간 파싱 (FP1-FP3, Qualifying, Sprint, Race)
+- [x] 현재 진행 중인 세션 / 다음 세션 판별 유틸리티
+- [x] 2026 시즌 폴백 데이터 (FastF1 미지원 시)
 
-### 2.4 동적 스케줄러
-- [ ] APScheduler AsyncIOScheduler 설정
-- [ ] 비경기일: 하루 1~2회 수집 (크론 8AM, 8PM UTC)
-- [ ] 경기 당일: 15~30분 간격 수집 (인터벌 잡, IP 차단 방지)
-- [ ] FastF1 세션 스케줄 연동 → 자동 모드 전환 (NORMAL ↔ RACE_WEEKEND)
-- [ ] 스케줄러 상태 모니터링 엔드포인트 (`GET /scheduler/status`)
-- [ ] FastAPI lifespan에 스케줄러 시작/정지 통합
+### 2.4 동적 스케줄러 ✅
+- [x] APScheduler AsyncIOScheduler 설정
+- [x] 비경기일: 하루 1~2회 수집 (크론 8AM, 8PM UTC)
+- [x] 경기 당일: 15~30분 간격 수집 (인터벌 잡, IP 차단 방지)
+- [x] FastF1 세션 스케줄 연동 → 자동 모드 전환 (NORMAL ↔ RACE_WEEKEND)
+- [x] 스케줄러 상태 모니터링 엔드포인트 (`GET /scheduler/status`)
+- [x] FastAPI lifespan에 스케줄러 시작/정지 통합
 
 ---
 
 ## Phase 3: LLM 요약 및 번역 파이프라인
 
-### 3.1 LLM API 클라이언트
-- [ ] OpenAI API 클라이언트 (GPT-4o / GPT-4o-mini)
-- [ ] Anthropic API 클라이언트 (Claude Sonnet / Haiku)
-- [ ] 통합 LLM 서비스 — 프로바이더 추상화, 폴백 로직
-- [ ] LLM 상태 엔드포인트 (`GET /llm/status`)
-- [ ] API 키 검증 및 에러 핸들링
+### 3.1 LLM API 클라이언트 ✅
+- [x] OpenAI API 클라이언트 (GPT-4o / GPT-4o-mini)
+- [x] Anthropic API 클라이언트 (Claude Sonnet / Haiku)
+- [x] 통합 LLM 서비스 — 프로바이더 추상화, 폴백 로직
+- [x] LLM 상태 엔드포인트 (`GET /llm/status`)
+- [x] API 키 검증 및 에러 핸들링
 
-### 3.2 영문 요약 생성
-- [ ] 기사 본문 → 1문단 영문 요약 프롬프트 설계
-- [ ] 배치 처리 (asyncio.Semaphore 기반 동시성 제어)
-- [ ] 요약 품질 검증 (길이, 키워드 포함, 제목 중복 방지)
-- [ ] 요약 파이프라인 오케스트레이터 (fetch → summarize → save → re-index)
-- [ ] 수동 트리거 엔드포인트 (`POST /llm/summarize`)
+### 3.2 영문 요약 생성 ✅
+- [x] 기사 본문 → 1문단 영문 요약 프롬프트 설계
+- [x] 배치 처리 (asyncio.Semaphore 기반 동시성 제어)
+- [x] 요약 품질 검증 (길이, 키워드 포함, 제목 중복 방지)
+- [x] 요약 파이프라인 오케스트레이터 (fetch → summarize → save → re-index)
+- [x] 수동 트리거 엔드포인트 (`POST /llm/summarize`)
 
-### 3.3 한국어 번역
-- [ ] 영문 요약 → 한국어 번역 프롬프트 설계
-- [ ] F1 전문 용어 일관성 유지 (한영 용어집 기반)
-- [ ] 번역 품질 검증 (한글 비율, 길이 체크)
-- [ ] 번역 결과 MongoDB 저장 + ES 인덱스 업데이트
-- [ ] 수동 트리거 엔드포인트 (`POST /llm/translate`)
+### 3.3 한국어 번역 ✅
+- [x] 영문 요약 → 한국어 번역 프롬프트 설계
+- [x] F1 전문 용어 일관성 유지 (한영 용어집 기반)
+- [x] 번역 품질 검증 (한글 비율, 길이 체크)
+- [x] 번역 결과 MongoDB 저장 + ES 인덱스 업데이트
+- [x] 수동 트리거 엔드포인트 (`POST /llm/translate`)
 
-### 3.4 자동 태깅
-- [ ] 규칙 기반 팀/드라이버 자동 태깅 (정규식 매칭)
-- [ ] 팀명 에일리어스 처리 (VCARB/Racing Bulls/AlphaTauri 등)
-- [ ] 세션/토픽 태깅 (qualifying, race, penalty, crash, strategy 등)
-- [ ] 태그 정규화 및 마스터 데이터 연동
-- [ ] 태깅 파이프라인 + 수동 트리거 (`POST /llm/tag`)
-- [ ] 전체 파이프라인 (요약 + 번역 + 태깅) 엔드포인트 (`POST /llm/pipeline`)
+### 3.4 자동 태깅 ✅
+- [x] 규칙 기반 팀/드라이버 자동 태깅 (정규식 매칭)
+- [x] 팀명 에일리어스 처리 (VCARB/Racing Bulls/AlphaTauri 등)
+- [x] 세션/토픽 태깅 (qualifying, race, penalty, crash, strategy 등)
+- [x] 태그 정규화 및 마스터 데이터 연동
+- [x] 태깅 파이프라인 + 수동 트리거 (`POST /llm/tag`)
+- [x] 전체 파이프라인 (요약 + 번역 + 태깅) 엔드포인트 (`POST /llm/pipeline`)
 
 ---
 

@@ -8,10 +8,10 @@
 
 | Phase | 완료 | 전체 | 진행률 |
 |-------|------|------|--------|
-| Phase 0: Project Init | 1 | 3 | 33% |
-| Phase 1: 백엔드 기반 구축 | 0 | 4 | 0% |
-| Phase 2: 데이터 수집 파이프라인 | 0 | 4 | 0% |
-| Phase 3: LLM 요약/번역 파이프라인 | 0 | 4 | 0% |
+| Phase 0: Project Init | 2 | 3 | 67% |
+| Phase 1: 백엔드 기반 구축 | 4 | 4 | 100% |
+| Phase 2: 데이터 수집 파이프라인 | 4 | 4 | 100% |
+| Phase 3: LLM 요약/번역 파이프라인 | 4 | 4 | 100% |
 | Phase 4: REST API 엔드포인트 | 0 | 4 | 0% |
 | Phase 5: React + shadcn/ui 프론트엔드 | 0 | 6 | 0% |
 | Phase 6: DevOps | 0 | 4 | 0% |
@@ -20,8 +20,8 @@
 
 > ※ 백엔드 Phase 1~3은 이전 세션에서 구현됨 (Ollama 기반, 새 tasks.md 기준으로 재계산)
 
-**마지막 완료 태스크**: Task 0.1 — 프로젝트 구조 및 개발 환경
-**다음 태스크**: Task 0.2 — Docker Compose 인프라
+**마지막 완료 태스크**: Task 2.1 — RSS 피드 수집 (feedparser 기반)
+**다음 태스크**: Task 4.1 — 뉴스 REST API 엔드포인트 (Phase 1~3 이미 완료)
 
 ---
 
@@ -134,3 +134,8 @@ backend/app/
 | 태스크 | 완료일 | 요약 |
 |--------|--------|------|
 | Phase 0 (0.1) | 2026-03-10 | React+Vite 전환: .env.example, .gitignore, pyproject.toml, frontend 구조 재정립 |
+| Phase 0 (0.2) | 2026-03-10 | Docker Compose: frontend 포트 3000:80, backend 멀티스테이지 빌드, build args VITE_API_URL |
+| Phase 1 (1.1~1.4) | 2026-03-10 | FastAPI 앱, MongoDB 스키마/Repository, ES 매핑/검색, 동기화 — 이전 세션에서 구현 |
+| Phase 2 (2.2~2.4) | 2026-03-10 | HTML 스크래퍼, FastF1 클라이언트, APScheduler — 이전 세션에서 구현 |
+| Phase 3 (3.1~3.4) | 2026-03-10 | OpenAI/Anthropic LLM 클라이언트, 요약/번역/태깅 파이프라인 — 이전 세션에서 구현 |
+| Task 2.1 | 2026-03-10 | feedparser RSS 수집: sources.py, parser.py, service.py, 스케줄러 통합 |
