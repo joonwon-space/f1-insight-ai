@@ -14,12 +14,12 @@
 - [x] `CLAUDE.md` 업데이트 (변경된 기술 스택 반영)
 - [x] Python `pyproject.toml` 의존성 정리 (`feedparser` 추가, `fastf1` 유지, 불필요 패키지 제거)
 
-### 0.2 Docker Compose 인프라
-- [ ] MongoDB 7 컨테이너 설정 (헬스체크, 볼륨, 네트워크)
-- [ ] Elasticsearch 8 컨테이너 설정 (메모리 제한, JVM 힙, 헬스체크)
-- [ ] Backend (FastAPI) 서비스 설정
-- [ ] Frontend (React + Vite) 서비스 설정
-- [ ] `docker-compose.yml` 통합 검증 (`docker compose config`)
+### 0.2 Docker Compose 인프라 ✅
+- [x] MongoDB 7 컨테이너 설정 (헬스체크, 볼륨, 네트워크)
+- [x] Elasticsearch 8 컨테이너 설정 (메모리 제한, JVM 힙, 헬스체크)
+- [x] Backend (FastAPI) 서비스 설정
+- [x] Frontend (React + Vite) 서비스 설정 — nginx on port 80
+- [x] `docker-compose.yml` 통합 검증
 
 ### 0.3 Cloudflare Tunnel 설정
 - [ ] Cloudflare 계정에 도메인 등록 및 DNS 설정
