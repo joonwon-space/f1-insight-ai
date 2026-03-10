@@ -11,9 +11,11 @@ venv/
 
 # Node.js
 node_modules/
-.next/
-out/
 .turbo/
+
+# Vite
+.vite/
+*.tsbuildinfo
 
 # Environment
 .env

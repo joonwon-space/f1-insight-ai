@@ -1,32 +1,18 @@
-import Link from "next/link";
+import { Link } from 'react-router-dom'
 
-const navLinks = [
-  { href: "/", label: "Home" },
-  { href: "/news", label: "News" },
-  { href: "/schedule", label: "Schedule" },
-  { href: "/search", label: "Search" },
-] as const;
-
-export default function Header() {
+export function Header() {
   return (
-    <header className="sticky top-0 z-50 flex h-14 items-center justify-between border-b border-neutral-800 bg-neutral-950 px-6">
-      <Link href="/" className="flex items-center gap-2">
-        <span className="text-xl font-bold tracking-tight text-white">
-          F1 <span className="text-f1-red">Insight</span> AI
-        </span>
-      </Link>
-
-      <nav className="hidden items-center gap-6 sm:flex">
-        {navLinks.map(({ href, label }) => (
-          <Link
-            key={href}
-            href={href}
-            className="text-sm font-medium text-neutral-400 transition-colors hover:text-white"
-          >
-            {label}
-          </Link>
-        ))}
-      </nav>
+    <header className="border-b border-gray-800 bg-[#15151e] px-6 py-4">
+      <div className="flex items-center justify-between">
+        <Link to="/" className="text-xl font-bold text-[#e10600]">
+          F1 Insight AI
+        </Link>
+        <nav className="flex gap-6 text-sm text-gray-400">
+          <Link to="/" className="hover:text-white transition-colors">News</Link>
+          <Link to="/schedule" className="hover:text-white transition-colors">Schedule</Link>
+          <Link to="/search" className="hover:text-white transition-colors">Search</Link>
+        </nav>
+      </div>
     </header>
-  );
+  )
 }

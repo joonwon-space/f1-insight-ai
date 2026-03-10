@@ -1,17 +1,24 @@
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000'
 
-export async function apiFetch<T>(path: string, options?: RequestInit): Promise<T> {
-  const res = await fetch(`${API_BASE_URL}${path}`, {
-    ...options,
+async function request<T>(path: string, options?: RequestInit): Promise<T> {
+  const url = `${API_BASE_URL}${path}`
+  const response = await fetch(url, {
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
       ...options?.headers,
     },
-  });
+    ...options,
+  })
 
-  if (!res.ok) {
-    throw new Error(`API error: ${res.status} ${res.statusText}`);
+  if (!response.ok) {
+    throw new Error(`API error: ${response.status} ${response.statusText}`)
   }
 
-  return res.json() as Promise<T>;
+  return response.json() as Promise<T>
+}
+
+export const api = {
+  get: <T>(path: string) => request<T>(path),
+  post: <T>(path: string, body: unknown) =>
+    request<T>(path, { method: 'POST', body: JSON.stringify(body) }),
 }
