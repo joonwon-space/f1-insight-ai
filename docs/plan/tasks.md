@@ -156,21 +156,21 @@
 
 ## Phase 5: React + shadcn/ui 프론트엔드
 
-### 5.1 프로젝트 셋업
-- [ ] Vite + React 19 + TypeScript 프로젝트 초기화
-- [ ] Tailwind CSS v4 설정
-- [ ] shadcn/ui 설치 및 초기 설정 (`npx shadcn@latest init`)
-- [ ] React Router 설정 (SPA 라우팅)
-- [ ] API 클라이언트 유틸리티 (`lib/api.ts`)
-- [ ] 환경 변수 설정 (`VITE_API_URL`)
+### 5.1 프로젝트 셋업 ✅
+- [x] Vite + React 19 + TypeScript 프로젝트 초기화
+- [x] Tailwind CSS v4 설정
+- [x] shadcn/ui 설치 및 초기 설정 (수동 컴포넌트: Button, Badge, Card, Skeleton, Sheet, Separator, Input)
+- [x] React Router 설정 (SPA 라우팅)
+- [x] API 클라이언트 유틸리티 (`lib/api.ts`)
+- [x] 환경 변수 설정 (`VITE_API_URL`)
 
-### 5.2 레이아웃 및 공통 컴포넌트
-- [ ] 루트 레이아웃 (Header + Sidebar + Main)
-- [ ] Header — F1 Insight AI 브랜딩, 네비게이션 (News, Schedule, Search)
-- [ ] Sidebar — 팀/드라이버 필터 (shadcn Accordion, Checkbox)
-- [ ] 반응형 모바일 레이아웃 (Sheet 사이드바, 햄버거 메뉴)
-- [ ] 다크 모드 기본 적용 (F1 테마 — 레드 #e10600 액센트)
-- [ ] 로딩 스켈레톤 (shadcn Skeleton)
+### 5.2 레이아웃 및 공통 컴포넌트 ✅
+- [x] 루트 레이아웃 (Header + Sidebar + Main)
+- [x] Header — F1 Insight AI 브랜딩, 네비게이션 (News, Schedule, Search)
+- [x] Sidebar — 팀/드라이버 필터 (shadcn Accordion, Checkbox)
+- [x] 반응형 모바일 레이아웃 (Sheet 사이드바, 햄버거 메뉴)
+- [x] 다크 모드 기본 적용 (F1 테마 — 레드 #e10600 액센트)
+- [x] 로딩 스켈레톤 (shadcn Skeleton)
 
 ### 5.3 뉴스 목록 페이지
 - [ ] 뉴스 카드 컴포넌트 (제목, 요약 미리보기, 소스, 날짜, 팀 배지)
