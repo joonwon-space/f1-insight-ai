@@ -7,12 +7,12 @@
 
 ## Phase 0: 환경 셋업 및 프로젝트 초기화
 
-### 0.1 프로젝트 구조 및 개발 환경
-- [ ] 프로젝트 디렉토리 구조 재정리 (React + Vite 기반으로 전환)
-- [ ] `.env.example` 업데이트 (LLM API 키, Unsplash API 키, Cloudflare 설정 추가)
-- [ ] `.gitignore` 정비 (Vite 빌드 산출물, 캐시 등)
-- [ ] `CLAUDE.md` 업데이트 (변경된 기술 스택 반영)
-- [ ] Python `pyproject.toml` 의존성 정리 (`feedparser` 추가, `fastf1` 유지, 불필요 패키지 제거)
+### 0.1 프로젝트 구조 및 개발 환경 ✅
+- [x] 프로젝트 디렉토리 구조 재정리 (React + Vite 기반으로 전환)
+- [x] `.env.example` 업데이트 (LLM API 키, Unsplash API 키, Cloudflare 설정 추가)
+- [x] `.gitignore` 정비 (Vite 빌드 산출물, 캐시 등)
+- [x] `CLAUDE.md` 업데이트 (변경된 기술 스택 반영)
+- [x] Python `pyproject.toml` 의존성 정리 (`feedparser` 추가, `fastf1` 유지, 불필요 패키지 제거)
 
 ### 0.2 Docker Compose 인프라
 - [ ] MongoDB 7 컨테이너 설정 (헬스체크, 볼륨, 네트워크)
